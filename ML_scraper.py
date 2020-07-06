@@ -158,27 +158,31 @@ def get_parameters():
 def ML_query(search_term, order=1, min_rep=3, category='0.0', price_min=0, price_max=2147483647, condition=0, aggressiveness=2):
     products = get_all_products(get_search_pages(search_term, category,
                                                  price_min, price_max, condition, aggressiveness), min_rep)
-    return sorted(products, key=lambda p: p["price"], reverse=order == 2)
+    return sorted(products, key=lambda p: p["price"], reverse=(order == 2))
 
 
 if __name__ == "__main__":
-    search_term = input("Digite os termos da pesquisa: ")
-    advanced_mode = input(
-        "Deseja utilizar as opções avançadas de pesquisa? Digite \"sim\" se positivo: ")
-    if 'sim' in advanced_mode.lower():
-        args = get_parameters()
-        order = int(input(
-            "Insira a ordenação desejada dos resultados.\n(0 - relevância | 1 - preço mínimo | 2 - preço máximo): "))
-        min_rep = int(input(
-            "Insira, entre 0 a 6, qual é o nível mínimo de reputação desejada para os vendedores: "))
-    else:
-        args = ()
-        order = 1
-        min_rep = 3
-    products = ML_query(search_term, order, min_rep, *args)
+    while True:
+        search_term = input("Digite os termos da pesquisa: ")
+        advanced_mode = input(
+            "Deseja utilizar as opções avançadas de pesquisa? Digite \"sim\" se positivo: ")
+        if 'sim' in advanced_mode.lower():
+            args = get_parameters()
+            order = int(input(
+                "Insira a ordenação desejada dos resultados.\n(0 - relevância | 1 - preço mínimo | 2 - preço máximo): "))
+            min_rep = int(input(
+                "Insira, entre 0 a 6, qual é o nível mínimo de reputação desejada para os vendedores: "))
+        else:
+            args = ()
+            order = 1
+            min_rep = 3
+        products = ML_query(search_term, order, min_rep, *args)
 
-    for product in products:
-        if product["reputable"]:
-            print_product(product)
-            print()
-    # TODO: ASK IF USER INTENDS TO DO ANOTHER SEARCH
+        for product in products:
+            if product["reputable"]:
+                print_product(product)
+                print()
+
+        if input("Deseja encerrar ou fazer outra pesquisa? Se quer fazer outra pesquisa, digite \"sim\" sem aspas. ").lower().strip() in "sim":
+            continue
+        break
