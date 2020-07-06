@@ -5,9 +5,11 @@ from time import sleep
 from pickle import load
 from urllib.parse import quote
 
-SKIP_PAGES = 0  # 0 unless debugging
+SKIP_PAGES = 1500  # 0 unless debugging
 KEYS_PORTUGUESE = {'link': 'Link', 'title': 'Título', 'price': 'Preço', 'no-interest': 'Parcelamento sem Juros',
                    'in-sale': 'Em Promoção', 'reputable': 'Boa reputação', 'picture': 'Link da imagem', 'free-shipping': 'Frete Grátis'}
+with open("categories.pickle", "rb") as cat:
+    CATS = load(cat)
 
 
 def get_link(product):
@@ -81,8 +83,16 @@ def is_reputable(link, min_rep=3, aggressiveness=2):
     return True
 
 
-with open("categories.pickle", "rb") as cat:
-    CATS = load(cat)
+def print_product(product):
+    print(f"""\
+    Título: {product['title']}
+    Preço: {product['price']}
+    Em promoção: {"Sim" if product['in-sale'] else "Não"}
+    Frete grátis: {"Sim" if product['free-shipping'] else "Não"}
+    Boa reputação: {"Sim" if product['reputable'] else "Não"}
+    Sem Juros: {"Sim" if product['no-interest'] else "Não"}
+    Link: {product['link']}
+    Imagem: {product['picture']}""")
 
 
 def print_cats():
@@ -169,7 +179,6 @@ if __name__ == "__main__":
 
     for product in products:
         if product["reputable"]:
-            for k, v in product.items():
-                print(f"{KEYS_PORTUGUESE[k]}: {v}")
+            print_product(product)
             print()
     # TODO: ASK IF USER INTENDS TO DO ANOTHER SEARCH
