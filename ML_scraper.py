@@ -6,6 +6,7 @@ from pickle import load
 from urllib.parse import quote
 
 SKIP_PAGES = 1500  # 0 unless debugging
+INT32_MAX = 2147483647
 KEYS_PORTUGUESE = {'link': 'Link', 'title': 'Título', 'price': 'Preço', 'no-interest': 'Parcelamento sem Juros',
                    'in-sale': 'Em Promoção', 'reputable': 'Boa reputação', 'picture': 'Link da imagem', 'free-shipping': 'Frete Grátis'}
 with open("categories.pickle", "rb") as cat:
@@ -116,7 +117,7 @@ def get_cat(catid):
     return subdomain, suffix
 
 
-def get_search_pages(term, cat='0.0', price_min=0, price_max=2147483647, condition=0, aggressiveness=2):
+def get_search_pages(term, cat='0.0', price_min=0, price_max=INT32_MAX, condition=0, aggressiveness=2):
     CONDITIONS = ["", "_ITEM*CONDITION_2230284", "_ITEM*CONDITION_2230581"]
     CATS.insert(0, [[0, 'Todas as categorias'], [
                 {'subdomain': 'lista', 'suffix': '', 'number': 0, 'name': 'Todas'}]])
@@ -137,25 +138,50 @@ def get_search_pages(term, cat='0.0', price_min=0, price_max=2147483647, conditi
 
 def get_parameters():
     # TODO: ADD EXCEPTION HANDLING
-    price_min = int(input(
-        "Digite como um número inteiro, sem outros símbolos, o preço mínimo para os resultados da pesquisa (Ex: '150' sem aspas para R$ 150,00): "))
-    price_max = int(input(
-        "Digite como um número inteiro, sem outros símbolos, o preço máximo para os resultados da pesquisa (Ex: '1500' sem aspas para R$ 1500,00): "))
+    try:
+        price_min = int(input(
+            "Digite como um número inteiro, sem outros símbolos, o preço mínimo para os resultados da pesquisa (Ex: '150' sem aspas para R$ 150,00): "))
+    except ValueError:
+        price_min = 0
+    if price_min < 0:
+        raise ValueError("O preço mínimo não pode ser um valor negativo.")
+
+    try:
+        price_max = int(input(
+            "Digite como um número inteiro, sem outros símbolos, o preço máximo para os resultados da pesquisa (Ex: '1500' sem aspas para R$ 1500,00): "))
+    except ValueError:
+        price_max = INT32_MAX
+    if price_max < 0:
+        raise ValueError("O preço máximo deve ser um valor positivo.")
+    if price_max > INT32_MAX:
+        raise ValueError(
+            f"Valor muito grande: o preço máximo deve ser um valor menor que {INT32_MAX}")
+
     if price_min > price_max:
         price_min, price_max = price_max, price_min
-    condition = int(input(
-        "Insira a condição do produto para os resultados da busca.\n(0 - misto | 1 - novo | 2 - usado): "))
+
     print_cats()
     category = input(
         "Insira a categoria de acordo com os código identificadores exibidos\n(Ex: Caso queira a categoria \"Adultos\", digite '31.1' sem aspas): ")
+    try:
+        map(int, category.split('.'))
+    except ValueError:
+        raise ValueError("A categoria foi digitada incorretamente.")
+    if len(category.split('.')) != 2:
+        raise ValueError("A categoria foi digitada incorretamente.")
 
-    aggressiveness = (int(input(
-        "Insira, entre 1 a 3 o nível desejado de agressividade:\n(Cuidado! Em um nível de agressividade alto, você pode ser bloqueado! )")) % 4) - 1
+    try:
+        aggressiveness = int(input(
+            "Insira, entre 1 a 3 o nível desejado de agressividade:\n(Cuidado! Em um nível de agressividade alto, você pode ser bloqueado! )"))
+    except ValueError:
+        aggressiveness = 2
+    if aggressiveness not in (1, 2, 3):
+        aggressiveness = 2
 
     return category, price_min, price_max, condition, aggressiveness
 
 
-def ML_query(search_term, order=1, min_rep=3, category='0.0', price_min=0, price_max=2147483647, condition=0, aggressiveness=2):
+def ML_query(search_term, order=1, min_rep=3, category='0.0', price_min=0, price_max=INT32_MAX, condition=0, aggressiveness=2):
     products = get_all_products(get_search_pages(search_term, category,
                                                  price_min, price_max, condition, aggressiveness), min_rep)
     return sorted(products, key=lambda p: p["price"], reverse=(order == 2))
