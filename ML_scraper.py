@@ -5,12 +5,16 @@ from time import sleep
 from pickle import load
 from urllib.parse import quote
 
-SKIP_PAGES = 1500  # 0 unless debugging
+SKIP_PAGES = 0  # 0 unless debugging
 INT32_MAX = 2147483647
 KEYS_PORTUGUESE = {'link': 'Link', 'title': 'Título', 'price': 'Preço', 'no-interest': 'Parcelamento sem Juros',
                    'in-sale': 'Em Promoção', 'reputable': 'Boa reputação', 'picture': 'Link da imagem', 'free-shipping': 'Frete Grátis'}
-with open("categories.pickle", "rb") as cat:
-    CATS = load(cat)
+try:
+    with open("categories.pickle", "rb") as cat:
+        CATS = load(cat)
+except FileNotFoundError:
+    raise FileNotFoundError(
+        "The categories.pickle database could not be loaded. Try to generate a new updated database with the extract_categories script, or to reinstall the module.")
 
 
 def get_link(product):
@@ -137,7 +141,6 @@ def get_search_pages(term, cat='0.0', price_min=0, price_max=INT32_MAX, conditio
 
 
 def get_parameters():
-    # TODO: ADD EXCEPTION HANDLING
     try:
         price_min = int(input(
             "Digite como um número inteiro, sem outros símbolos, o preço mínimo para os resultados da pesquisa (Ex: '150' sem aspas para R$ 150,00): "))
@@ -194,14 +197,21 @@ if __name__ == "__main__":
             "Deseja utilizar as opções avançadas de pesquisa? Digite \"sim\" se positivo: ")
         if 'sim' in advanced_mode.lower():
             args = get_parameters()
-            order = int(input(
-                "Insira a ordenação desejada dos resultados.\n(0 - relevância | 1 - preço mínimo | 2 - preço máximo): "))
-            min_rep = int(input(
-                "Insira, entre 0 a 6, qual é o nível mínimo de reputação desejada para os vendedores: "))
+            try:
+                order = int(input(
+                    "Insira a ordenação desejada dos resultados.\n(0 - relevância | 1 - preço mínimo | 2 - preço máximo): "))
+            except ValueError:
+                order = 1
+            try:
+                min_rep = int(input(
+                    "Insira, entre 0 a 6, qual é o nível mínimo de reputação desejada para os vendedores: "))
+            except ValueError:
+                min_rep = 3
         else:
             args = ()
             order = 1
             min_rep = 3
+
         products = ML_query(search_term, order, min_rep, *args)
 
         for product in products:
