@@ -123,8 +123,6 @@ def get_cat(catid):
 
 def get_search_pages(term, cat='0.0', price_min=0, price_max=INT32_MAX, condition=0, aggressiveness=2):
     CONDITIONS = ["", "_ITEM*CONDITION_2230284", "_ITEM*CONDITION_2230581"]
-    CATS.insert(0, [[0, 'Todas as categorias'], [
-                {'subdomain': 'lista', 'suffix': '', 'number': 0, 'name': 'Todas'}]])
     subdomain, suffix = get_cat(cat)
     index = 1
     pages = []
