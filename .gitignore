@@ -1,2 +1,3 @@
 *.txt
 UPDATE_ML_QUERY.bat
+__pycache__/
