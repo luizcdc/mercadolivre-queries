@@ -79,8 +79,14 @@ class TestCategories(unittest.TestCase):
     # true here
 
 
+class TestGetCat(unittest.TestCase):
+    """Tests the behaviour of the function get_cat"""
+
+
 class TestGetLink(unittest.TestCase):
     """Tests the behaviour of the function get_link"""
+    def test_link_valid():
+        pass
 
 
 class TestGetTitle(unittest.TestCase):
@@ -107,24 +113,12 @@ class TestIsInSale(unittest.TestCase):
     """Tests the behaviour of the function is_in_sale"""
 
 
-class TestGetAllProducts(unittest.TestCase):
-    """Tests the behaviour of the function get_all_products"""
-
-
 class TestIsReputable(unittest.TestCase):
     """Tests the behaviour of the function is_reputable"""
 
 
-class TestPrintProduct(unittest.TestCase):
-    """Tests the behaviour of the function print_product"""
-
-
-class TestPrintCats(unittest.TestCase):
-    """Tests the behaviour of the function print_cats"""
-
-
-class TestGetCat(unittest.TestCase):
-    """Tests the behaviour of the function get_cat"""
+class TestGetAllProducts(unittest.TestCase):
+    """Tests the behaviour of the function get_all_products"""
 
 
 class TestGetSearchPages(unittest.TestCase):
