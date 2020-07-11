@@ -75,12 +75,30 @@ class TestCategories(unittest.TestCase):
                 self.assertEqual(type(curr_child['subdomain']), str)
         self.__class__.last_test_altered_cats = False
 
-    # if tearDown() is added, don't set last_test_altered_cats to
-    # true here
+    def tearDown(self):
+        # if tearDown() is later implemented, don't set
+        # last_test_altered_cats to anything here, it needs to be
+        # handled uniquely by setUp()
+        pass
 
 
 class TestGetCat(unittest.TestCase):
     """Tests the behaviour of the function get_cat"""
+
+    def test_returns_correct_types(self):
+        pass
+
+    def test_subdomain_not_empty(self):
+        pass
+
+    def test_raises_ValueError_if_not_existent(self):
+        pass
+
+    def test_returned_values_in_CATS(self):
+        pass
+
+    def test_doesnt_modify_CATS(self):
+        pass
 
 
 class TestGetLink(unittest.TestCase):
