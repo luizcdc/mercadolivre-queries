@@ -3,8 +3,20 @@ import ML_scraper
 from bs4 import BeautifulSoup
 from random import choice, randint
 from pickle import load
+
 with open("categories.pickle", "rb") as cat:
     backup_CATS = load(cat)
+
+product = """<li class="results-item highlighted article stack product "> <div class="rowItem item product-item highlighted item--stack new with-reviews to-item has-variations" id="MLB1543163640"><div class="item__image item__image--stack"> <div class="images-viewer" item-url="https://www.mercadolivre.com.br/iphone-11-128-gb-preto-4-gb-ram/p/MLB15149567?source=search#searchVariation=MLB15149567&amp;position=1&amp;type=product&amp;tracking_id=b008d681-98e3-4479-90c6-98bd291f30f6" item-id="MLB1543163640" product-id="MLB15149567"> <div class="image-content"> <a href="https://www.mercadolivre.com.br/iphone-11-128-gb-preto-4-gb-ram/p/MLB15149567?source=search#searchVariation=MLB15149567&amp;position=1&amp;type=product&amp;tracking_id=b008d681-98e3-4479-90c6-98bd291f30f6" class="figure item-image item__js-link"> <img class="lazy-load" width="160" height="160" alt="iPhone 11 128 GB Preto 4 GB RAM" src="https://http2.mlstatic.com/D_NQ_NP_678481-MLA42453875909_072020-V.webp"> </a> </div> </div></div><div class="item__info-container highlighted "> <div class="item__info item--show-right-col "> <div class="item__highlight__container"> <div class="item__highlight item__highlight--deal" style="color: rgb(255, 255, 255); background: rgb(52, 131, 250); --darkreader-inline-color:#e8e6e3; --darkreader-inline-bgimage: initial; --darkreader-inline-bgcolor:#0447ac;" data-darkreader-inline-color="" data-darkreader-inline-bgimage="" data-darkreader-inline-bgcolor=""> Enviando normalmente </div> </div><h2 class="item__title list-view-item-title"> <a href="https://www.mercadolivre.com.br/iphone-11-128-gb-preto-4-gb-ram/p/MLB15149567?source=search#searchVariation=MLB15149567&amp;position=1&amp;type=product&amp;tracking_id=b008d681-98e3-4479-90c6-98bd291f30f6" class="item__info-title"> <span class="main-title"> iPhone 11 128 GB Preto 4 GB RAM </span> </a> <div class="item__brand"> <a class="item__brand-link" href="https://loja.mercadolivre.com.br/fast-shop"> <span class="item__brand-title-tos"> por Fast Shop </span> </a> </div></h2> <div class="price__container"> <span class="price-old" itemprop="price-old"> <del> R$&nbsp;6.099 </del> </span><div class="item__price item__price-discount"> <span class="price__symbol">R$</span> <span class="price__fraction">4.629</span></div> <div class="item__discount ">24% OFF</div> </div> <div class="item__stack_column highlighted"> <div class="item__stack_column__info"> <div class="stack_column_item installments highlighted"><span class="item-installments free-interest"> <span class="item-installments-multiplier"> 12x </span> <span class="item-installments-price"> R$ 385 <sup class="installment__decimals">75</sup> </span> <span class="item-installments-interest"> sem juros </span></span> </div> <div class="stack_column_item status"> <div class="item__status"> <div class="item__condition"> </div> </div> </div> </div> </div> <div class="stack_colum_right without-attributes with-reviews"> <div class="item__reviews"> <div class="stars"> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> </div> <div class="item__reviews-total">232</div></div> <div class="stack_column_right__bottom item__has-variations"> <div class="variation-picker__container"> <div class="ui-dropdown custom"> <input type="checkbox" id="dropdown-variations-0" class="dropdown-trigger variation-picker__trigger" autocomplete="off" hidden="" data-id="MLB1543163640"> <label for="dropdown-variations-0" class="ui-dropdown__link"> <span class="variation-picker__label">Cor: </span> <span class="ui-dropdown__display variation-picker__label variation-picker__label-bold">Preto</span> <div class="ui-dropdown__indicator"></div> </label> <div class="ui-dropdown__content dropdown__variations-content variation-picker cursor-wait variation-picker__size-3" data-size="3"> <ul class=""> <li id="MLB15149567" class="attrBox skeleton__box--0 selected-option"> <img class="variation-picker__img" title="Preto" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_857283-MLA42453875910_072020-S.webp"></li> <li id="MLB15149572" class="attrBox skeleton__box--3 "> <img class="variation-picker__img" title="(Product)Red" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_608338-MLA42453875933_072020-S.webp"></li> <li id="MLB15149568" class="attrBox skeleton__box--5 "> <img class="variation-picker__img" title="Branco" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_899930-MLA42453930760_072020-S.webp"></li></ul> </div> </div> </div> </div> </div> </div></div> <form class="item__bookmark-form" action="/search/bookmarks/MLB1543163640/make" method="post" id="bookmarkForm"> <button type="submit" class="bookmarks favorite " data-id="MLB1543163640"> <div class="item__bookmark"> <div class="icon"></div> </div> </button> <input type="hidden" name="method" value="add"> <input type="hidden" name="itemId" value="MLB1543163640"> <input type="hidden" name="_csrf" value="cbe9313a-32d9-4618-bc3d-c0bb7091ebce"> </form> </div></li>"""
+product_tag = BeautifulSoup(product, "html.parser")
+incorrect_tag = BeautifulSoup("<span class=\"price__symbol\">R$</span>",
+                              "html.parser")
+# this raw html was extracted from a listing of the iPhone 11. It was chosen be-
+# cause usually an iPhone stays being commercialized for many years after its
+# launch, meaning that is less likely that the link will break in the next 5
+# years
+print(ML_scraper.get_link(product_tag))
+input()
 
 
 class TestCategories(unittest.TestCase):
@@ -196,20 +208,14 @@ class TestGetLink(unittest.TestCase):
     or "-_JM" (1231231232 standing for any arbitrary number).
     """
 
-    product = """<li class="results-item highlighted article stack product "> <div class="rowItem item product-item highlighted item--stack new with-reviews has-variations" id="MLB1319143076"><div class="item__image item__image--stack"> <div class="images-viewer" item-url="https://www.mercadolivre.com.br/xiaomi-mi-a3-dual-sim-64-gb-azulon-4-gb-ram/p/MLB15047012?source=search#searchVariation=MLB15047012&amp;position=1&amp;type=product&amp;tracking_id=51a7de21-124d-434d-b9e2-c2cf8c70997b" item-id="MLB1319143076" product-id="MLB15047012"> <div class="image-content"> <a href="https://www.mercadolivre.com.br/xiaomi-mi-a3-dual-sim-64-gb-azulon-4-gb-ram/p/MLB15047012?source=search#searchVariation=MLB15047012&amp;position=1&amp;type=product&amp;tracking_id=51a7de21-124d-434d-b9e2-c2cf8c70997b" class="figure item-image item__js-link"> <img class="lazy-load" width="160" height="160" alt="Xiaomi Mi A3 Dual SIM 64 GB Azulón 4 GB RAM" src="https://http2.mlstatic.com/D_NQ_NP_751867-MLA40195716404_122019-V.webp"> </a> </div> </div></div><div class="item__info-container highlighted "> <div class="item__info item--show-right-col "> <div class="item__highlight__container"> <div class="item__highlight item__highlight--deal" style="color: rgb(255, 255, 255); background: rgb(52, 131, 250); --darkreader-inline-color:#e8e6e3; --darkreader-inline-bgimage: initial; --darkreader-inline-bgcolor:#0447ac;" data-darkreader-inline-color="" data-darkreader-inline-bgimage="" data-darkreader-inline-bgcolor=""> Enviando normalmente </div> </div><h2 class="item__title list-view-item-title"> <a href="https://www.mercadolivre.com.br/xiaomi-mi-a3-dual-sim-64-gb-azulon-4-gb-ram/p/MLB15047012?source=search#searchVariation=MLB15047012&amp;position=1&amp;type=product&amp;tracking_id=51a7de21-124d-434d-b9e2-c2cf8c70997b" class="item__info-title"> <span class="main-title"> Xiaomi Mi A3 Dual SIM 64 GB Azulón 4 GB RAM </span> </a></h2> <div class="price__container"><div class="item__price "> <span class="price__symbol">R$</span> <span class="price__fraction">1.468</span></div> </div> <div class="item__stack_column highlighted"> <div class="item__stack_column__info"> <div class="stack_column_item installments highlighted"><span class="item-installments showInterest"> <span class="item-installments-multiplier"> 12x </span> <span class="item-installments-price"> R$ 143 <sup class="installment__decimals">31</sup> </span></span> </div> <div class="stack_column_item shipping highlighted"> <div class="item__shipping free-shipping highlighted"> <span class="stack-item-info "> <p>Frete grátis</p> </span> </div> </div> <div class="stack_column_item status"> </div> </div> </div> <div class="stack_colum_right without-attributes with-reviews"> <div class="item__reviews"> <div class="stars"> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> </div> <div class="item__reviews-total">2408</div></div> <div class="stack_column_right__bottom item__has-variations"> <div class="variation-picker__container"> <div class="ui-dropdown custom"> <input type="checkbox" id="dropdown-variations-0" class="dropdown-trigger variation-picker__trigger" autocomplete="off" hidden="" data-id="MLB1319143076"> <label for="dropdown-variations-0" class="ui-dropdown__link"> <span class="variation-picker__label">Cor: </span> <span class="ui-dropdown__display variation-picker__label variation-picker__label-bold">Azulón</span> <div class="ui-dropdown__indicator"></div> </label> <div class="ui-dropdown__content dropdown__variations-content variation-picker cursor-wait variation-picker__size-3" data-size="3"> <ul class=""> <li id="MLB15047012" class="attrBox skeleton__box--0 selected-option"> <img class="variation-picker__img" title="Azulón" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_660231-MLA40195221906_122019-S.webp"></li> <li id="MLB15047013" class="attrBox skeleton__box--3 "> <img class="variation-picker__img" title="Acinzentado" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_838072-MLA40195716413_122019-S.webp"></li> <li id="MLB15047014" class="attrBox skeleton__box--5 "> <img class="variation-picker__img" title="Branco-puro" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_891947-MLA40195716415_122019-S.webp"></li></ul> </div> </div> </div> </div> </div> </div></div> <form class="item__bookmark-form" action="/search/bookmarks/MLB1319143076/make" method="post" id="bookmarkForm"> <button type="submit" class="bookmarks favorite " data-id="MLB1319143076"> <div class="item__bookmark"> <div class="icon"></div> </div> </button> <input type="hidden" name="method" value="add"> <input type="hidden" name="itemId" value="MLB1319143076"> <input type="hidden" name="_csrf" value="fa9f5a51-d786-425e-9bc6-74fa354f33d4"> </form> </div></li>"""
-    product_tag = BeautifulSoup(product, "html.parser")
-    incorrect_tag = BeautifulSoup("<span class=\"price__symbol\">R$</span>",
-                                  "html.parser")
-
     def test_returns_string(self):
         """Tests that the return type is str"""
-        self.assertTrue(isinstance(ML_scraper
-                                   .get_link(self.__class__.product_tag), str))
+        self.assertTrue(isinstance(ML_scraper.get_link(product_tag), str))
 
     def test_link_is_from_tag(self):
         """Tests that the final link is contained in the tag's text"""
-        self.assertTrue(ML_scraper.get_link(self.__class__.product_tag)
-                        in self.__class__.product)
+        print(ML_scraper.get_link(product_tag))
+        self.assertTrue(ML_scraper.get_link(product_tag) in product)
 
     def test_link_stripped_correctly(self):
         """Tests if link was stripped of trailing irrelevant information"""
@@ -224,53 +230,134 @@ class TestGetLink(unittest.TestCase):
         during it's execution, must return an empty string, which allows
         for the functions that rely on it to handle it accordingly.
         """
-        self.assertEqual(ML_scraper.get_link("some string") == "")
-        self.assertEqual(ML_scraper.get_link(incorrect_tag) == "")
-        self.assertEqual(ML_scraper.get_link(123312) == "")
+        self.assertEqual(ML_scraper.get_link("some string"), "")
+        self.assertEqual(ML_scraper.get_link(incorrect_tag), "")
+        self.assertEqual(ML_scraper.get_link(123312), "")
 
 
 class TestGetTitle(unittest.TestCase):
-    """Tests the behaviour of the function get_title"""
+    """Tests the behaviour of the function get_title
+
+    A title will always be a string, and it needs to be stripped of
+    spaces in the beginning or the end. Failure to obtain the title of a
+    product is not a fatal failure and for that reason, should not raise
+    an exception, but simply return something that symbolizes this fai-
+    lure.
+
+    What is tested
+    --------------
+    - returned string correctly stripped
+    - extracts correctly for a provided example
+    - returns empty string in failure
+    """
 
 
 class TestGetPrice(unittest.TestCase):
-    """Tests the behaviour of the function get_price"""
+    """Tests the behaviour of the function get_price
+
+    A price must be stored as a couple (tuple) of ints, except when
+    there was a failure to retrieve this information, in which case it
+    is stored as (nan,nan), so that when sorting the list, no errors
+    are raised, and the items that lack price are returned in the end
+    of the list, independent of choice of ordering.
+
+    What is tested
+    --------------
+    - type is (int,int) for provided example
+    - value is correct for provided example
+    - type is (float('nan'),float('nan')) on failure to extract
+    """
 
 
-class TesteGetPicture(unittest.TestCase):
-    """Tests the behaviour of the function get_picture"""
+class TestGetPicture(unittest.TestCase):
+    """Tests the behaviour of the function get_picture
+
+    A picture is stored as a hyperlink (str). Failure to retrieve a pic-
+    ture of a product is not a fatal failure, and an empty string should
+    be returned in case of failure.
+
+    What is tested
+    --------------
+    - type is string
+    - returned value is a hyperlink
+    - returns empty string on failure
+    - returns correctly for provided example
+    """
 
 
 class TestIsNoInterest(unittest.TestCase):
-    """Tests the behaviour of the function is_no_interest"""
+    """Tests the behaviour of the function is_no_interest
+
+    What is tested
+    --------------
+    - return type is bool
+    - in failure returns false
+    - returns correctly for provided example
+    """
 
 
-class TesteHasFreeShipping(unittest.TestCase):
-    """Tests the behaviour of the function has_free_shipping"""
+class TestHasFreeShipping(unittest.TestCase):
+    """Tests the behaviour of the function has_free_shipping
+
+    What is tested
+    --------------
+    - return type is bool
+    - failure returns false
+    - returns correctly for provided example
+    """
 
 
 class TestIsInSale(unittest.TestCase):
-    """Tests the behaviour of the function is_in_sale"""
+    """Tests the behaviour of the function is_in_sale
+
+    What is tested
+    --------------
+    - return type is bool
+    - failure returns false
+    - returns correctly for provided example
+    """
 
 
 class TestIsReputable(unittest.TestCase):
-    """Tests the behaviour of the function is_reputable"""
+    """Tests the behaviour of the function is_reputable
+
+    What is tested
+    --------------
+    - return type is bool
+    - failure returns false
+    - returns correctly for provided example (may break if provided
+    example of listing becomes invalid)
+    """
 
 
 class TestGetAllProducts(unittest.TestCase):
-    """Tests the behaviour of the function get_all_products"""
+    """Tests the behaviour of the function get_all_products
+
+    What is tested
+    --------------
+    - return type is list
+    """
 
 
 class TestGetSearchPages(unittest.TestCase):
-    """Tests the behaviour of the function get_search_pages"""
+    """Tests the behaviour of the function get_search_pages
 
-
-class TestGetParameters(unittest.TestCase):
-    """Tests the behaviour of the function get_parameters"""
+    What is tested
+    --------------
+    - return type is list
+    - in returned pages there are products
+    """
 
 
 class TestMLQuery(unittest.TestCase):
-    """Tests the behaviour of the function ML_query"""
+    """Tests the behaviour of the function ML_query
+
+    What is tested
+    --------------
+    - return type is list
+    - returns correct reputation (consistent with is_reputable)
+    - obeys order parameter
+    """
 
 
 if __name__ == "__main__":
