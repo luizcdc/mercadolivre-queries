@@ -1,5 +1,6 @@
 import unittest
 import ML_scraper
+from re import search
 from bs4 import BeautifulSoup
 from random import choice, randint
 from pickle import load
@@ -15,8 +16,6 @@ incorrect_tag = BeautifulSoup("<span class=\"price__symbol\">R$</span>",
 # cause usually an iPhone stays being commercialized for many years after its
 # launch, meaning that is less likely that the link will break in the next 5
 # years
-print(ML_scraper.get_link(product_tag))
-input()
 
 
 class TestCategories(unittest.TestCase):
@@ -199,6 +198,7 @@ class TestGetLink(unittest.TestCase):
     - get_link doesn't return something that wasn't contained
     in the tag
     - get_link returns an empty string if something went wrong
+    - get_link returns a hyperlink
 
     Details
     -------
@@ -214,13 +214,17 @@ class TestGetLink(unittest.TestCase):
 
     def test_link_is_from_tag(self):
         """Tests that the final link is contained in the tag's text"""
-        print(ML_scraper.get_link(product_tag))
         self.assertTrue(ML_scraper.get_link(product_tag) in product)
 
     def test_link_stripped_correctly(self):
-        """Tests if link was stripped of trailing irrelevant information"""
-        # TODO: IMPLEMENT
-        pass
+        """Tests if link was stripped of trailing irrelevant information
+
+        With re.search, match in link either MLB123123132 or -_JM, and
+        these need to be the end of the link (123123132 stands for any
+        arbitrary number).
+        """
+        self.assertTrue(search(r"MLB\d+$|-_JM$|^$", get_link(product_tag)))
+        # needs another example product to test -_JM type links
 
     def test_failure_returns_empty_string(self):
         """Tests the return in case of failure
@@ -230,9 +234,10 @@ class TestGetLink(unittest.TestCase):
         during it's execution, must return an empty string, which allows
         for the functions that rely on it to handle it accordingly.
         """
-        self.assertEqual(ML_scraper.get_link("some string"), "")
         self.assertEqual(ML_scraper.get_link(incorrect_tag), "")
-        self.assertEqual(ML_scraper.get_link(123312), "")
+
+    def test_returns_hyperlink(self):
+        pass
 
 
 class TestGetTitle(unittest.TestCase):
@@ -251,6 +256,23 @@ class TestGetTitle(unittest.TestCase):
     - returns empty string in failure
     """
 
+    def test_string_stripped(self):
+        """Tests if the title is correctly stripped of spaces"""
+        title = ML_scraper.get_title(product_tag)
+        try:
+            self.assertTrue(title[0] != " " and title[-1] != " ")
+        except IndexError:
+            pass
+
+    def test_get_title_from_example(self):
+        """Tests if the title was correctly extracted from the example"""
+        title = ML_scraper.get_title(product_tag)
+        self.assertEqual(title, "iPhone 11 128 GB Preto 4 GB RAM")
+
+    def test_empty_string_on_failure(self):
+        """Tests that get_title returns empty string when it fails"""
+        self.assertEqual(ML_scraper.get_title(incorrect_tag), "")
+
 
 class TestGetPrice(unittest.TestCase):
     """Tests the behaviour of the function get_price
@@ -268,6 +290,22 @@ class TestGetPrice(unittest.TestCase):
     - type is (float('nan'),float('nan')) on failure to extract
     """
 
+    def test_type_correct(self):
+        """Tests if returns the correct type for the example product"""
+        price = ML_scraper.get_price(product_tag)
+        self.assertTrue(isinstance(price, tuple),
+                        isinstance(price[0], int),
+                        isinstance(price[1], int))
+
+    def test_get_price_from_example(self):
+        """Tests if the price was correctly extracted from the example"""
+        self.assertEqual(ML_scraper.get_price(product_tag), (4629, 0))
+
+    def test_returns_correctly_on_failure(self):
+        """Tests that the return value on failure is (nan,nan)"""
+        self.assertEqual(ML_scraper.get_price(incorrect_tag),
+                         (float('nan'), float('nan')))
+
 
 class TestGetPicture(unittest.TestCase):
     """Tests the behaviour of the function get_picture
@@ -283,6 +321,20 @@ class TestGetPicture(unittest.TestCase):
     - returns empty string on failure
     - returns correctly for provided example
     """
+
+    def test_return_type_is_string(self):
+        """Tests that the return type is a string"""
+        self.assertTrue(isinstance(ML_scraper.get_picture(product_tag), str))
+        self.assertTrue(isinstance(ML_scraper.get_picture(incorrect_tag), str))
+
+    def test_returned_value_is_hyperlink(self):
+        pass
+
+    def test_failure_returns_empty_string(self):
+        pass
+
+    def test_get_picture_from_example(self):
+        pass
 
 
 class TestIsNoInterest(unittest.TestCase):
