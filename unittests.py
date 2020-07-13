@@ -259,10 +259,7 @@ class TestGetTitle(unittest.TestCase):
     def test_string_stripped(self):
         """Tests if the title is correctly stripped of spaces"""
         title = ML_scraper.get_title(product_tag)
-        try:
-            self.assertTrue(title[0] != " " and title[-1] != " ")
-        except IndexError:
-            pass
+        self.assertTrue(title.strip() == title)
 
     def test_get_title_from_example(self):
         """Tests if the title was correctly extracted from the example"""
