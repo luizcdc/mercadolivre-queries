@@ -1,5 +1,6 @@
 import unittest
 import ML_scraper
+from math import isnan
 from re import search, match, compile
 from bs4 import BeautifulSoup
 from random import choice, randint
@@ -307,8 +308,8 @@ class TestGetPrice(unittest.TestCase):
     def test_type_correct(self):
         """Tests if returns the correct type for the example product"""
         price = ML_scraper.get_price(PRODUCT_TAG)
-        self.assertTrue(isinstance(price, tuple),
-                        isinstance(price[0], int),
+        self.assertTrue(isinstance(price, tuple) and
+                        isinstance(price[0], int) and
                         isinstance(price[1], int))
 
     def test_get_price_from_example(self):
@@ -324,8 +325,8 @@ class TestGetPrice(unittest.TestCase):
         was made too work with is passed as an argument, an empty string
         is returned.
         """
-        self.assertEqual(ML_scraper.get_price(INCORRECT_TAG),
-                         (float('nan'), float('nan')))
+        price = ML_scraper.get_price(INCORRECT_TAG)
+        self.assertTrue(isnan(price[0]), isnan(price[1]))
 
 
 class TestGetPicture(unittest.TestCase):

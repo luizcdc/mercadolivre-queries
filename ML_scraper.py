@@ -41,9 +41,16 @@ def get_title(product):
 
 
 def get_price(product):
-    price = product.find(
-        class_="price__fraction").contents[0].strip()
-    return float(price) * (1 if len(price) < 4 else 1000)
+    price_container = product.find(class_="price__container")
+    if price_container:
+        price_int = price_container.find(
+            class_="price__fraction").contents[0].strip()
+        price_int = int(float(price_int) * (1 if len(price_int) < 4 else 1000))
+        price_cents = price_container.find(class_="price__decimals")
+        price_cents = 0 if not price_cents else int(price_cents.contents[0].strip())
+    else:
+        price_int, price_cents = float('nan'), float('nan')
+    return (price_int, price_cents)
 
 
 def get_picture(product):

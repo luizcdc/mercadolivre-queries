@@ -324,8 +324,8 @@ class TestGetPrice(unittest.TestCase):
         was made too work with is passed as an argument, an empty string
         is returned.
         """
-        self.assertEqual(ML_scraper.get_price(INCORRECT_TAG),
-                         (float('nan'), float('nan')))
+        price = ML_scraper.get_price(INCORRECT_TAG)
+        self.assertTrue(isnan(price[0]), isnan(price[1]))
 
 
 class TestGetPicture(unittest.TestCase):
