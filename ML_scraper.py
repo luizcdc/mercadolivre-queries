@@ -47,11 +47,15 @@ def get_price(product):
 
 
 def get_picture(product):
-    picture = (product.find(class_="item__image item__image--stack")
-               .find("img").get("src"))
-    if not picture:
-        picture = (product.find(class_="item__image item__image--stack")
-                   .find("img").get("data-src"))
+    picture = ""
+    image_tag = product.find(class_="item__image item__image--stack")
+    if image_tag:
+        picture = image_tag.find("img").get("src")
+        if not picture:
+            picture = image_tag.find("img").get("data-src")
+        if not picture:
+            picture = ""
+
     return picture
 
 
