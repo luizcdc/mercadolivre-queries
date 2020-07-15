@@ -224,7 +224,8 @@ class TestGetLink(unittest.TestCase):
         these need to be the end of the link (123123132 stands for any
         arbitrary number).
         """
-        self.assertTrue(search(r"MLB\d+$|-_JM$|^$", get_link(PRODUCT_TAG)))
+        self.assertTrue(search(r"MLB\d+$|-_JM$|^$",
+                               ML_scraper.get_link(PRODUCT_TAG)))
         # TODO: needs another example product to test -_JM type links
 
     def test_failure_returns_empty_string(self):
@@ -245,7 +246,7 @@ class TestGetLink(unittest.TestCase):
 
     def test_returns_url(self):
         """Tests if the returned value is an http/https url"""
-        link_url = get_link(PRODUCT_TAG)
+        link_url = ML_scraper.get_link(PRODUCT_TAG)
         self.assertTrue(match(URL_RE, link_url) or link_url == "")
 
 
@@ -479,7 +480,7 @@ class TestIsReputable(unittest.TestCase):
 
     def test_return_type_is_bool(self):
         """Tests that the returned value is a bool"""
-        link = get_link(PRODUCT_TAG)
+        link = ML_scraper.get_link(PRODUCT_TAG)
         self.assertTrue(isinstance(ML_scraper.is_reputable(link), bool))
 
     def test_failure_returns_correctly(self):
@@ -494,7 +495,7 @@ class TestIsReputable(unittest.TestCase):
         It should return False for any min_rep above 0. If the min_rep
         passed as a parameter is 0, it should return True.
         """
-        link1 = get_link(INCORRECT_TAG)
+        link1 = ML_scraper.get_link(INCORRECT_TAG)
         link2 = "https://www.mercadolivre.com.br/link_invalido_deve_dar_404"
         for rep in range(1, 6):
             self.assertEqual(ML_scraper.is_reputable(link2, min_rep=rep), False)
@@ -505,7 +506,7 @@ class TestIsReputable(unittest.TestCase):
     def test_returns_correctly_for_examples(self):
         """Tests if the result is consistent with the examples"""
         for rep in range(6):
-            link = get_link(PRODUCT_TAG)
+            link = ML_scraper.get_link(PRODUCT_TAG)
             self.assertEqual(ML_scraper.is_reputable(link, min_rep=rep), True)
             # every iteration in this loop should return True
             # because the example provided is of a listing which

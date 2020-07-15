@@ -4,6 +4,7 @@ from requests import get
 from time import sleep
 from pickle import load
 from urllib.parse import quote
+from re import compile, search
 
 SKIP_PAGES = 1500  # 0 unless debugging
 INT32_MAX = 2147483647
@@ -26,11 +27,13 @@ except FileNotFoundError:
 
 
 def get_link(product):
-    link = product.find(class_="item__info-title").get("href").strip()
-    jm_loc = link.find('-_JM')
-    if jm_loc == -1:
-        return link
-    return link[:jm_loc + 4]
+    LINK_CATCHER = compile(r"(https?://.+(?:MLB\d+|-_JM))")
+    link = product.find(class_="item__info-title")
+    if link:
+        link = link.get("href").strip()
+        link = search(LINK_CATCHER, link)
+        return link[0]
+    return ""
 
 
 def get_title(product):
