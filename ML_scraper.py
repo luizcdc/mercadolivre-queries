@@ -37,7 +37,12 @@ def get_link(product):
 
 
 def get_title(product):
-    return product.find(class_="main-title").contents[0].strip()
+    title_tag = product.find(class_="main-title")
+    if not title_tag:
+        title_tag = ""
+    else:
+        title_tag = title_tag.contents[0].strip()
+    return title_tag
 
 
 def get_price(product):
@@ -67,9 +72,7 @@ def get_picture(product):
 
 
 def is_no_interest(product):
-    class_ = (product.find(class_="stack_column_item installments highlighted")
-              .contents[0].get("class"))
-    return class_ == "item-installments free-interest"
+    return "item-installments free-interest" in str(product)
 
 
 def has_free_shipping(product):
