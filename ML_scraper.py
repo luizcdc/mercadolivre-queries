@@ -121,6 +121,7 @@ def print_cats():
 
 def get_cat(catid):
     father_num, child_num = map(int, catid.split('.'))
+    subdomain = False
     for father_cat in CATS:
         if father_cat[0][0] == father_num:
             for child in father_cat[1]:
@@ -128,6 +129,9 @@ def get_cat(catid):
                     subdomain = child['subdomain']
                     suffix = child['suffix']
                     break
+    if not subdomain:
+        raise ValueError(f"Categoria informada \"{catid}\" não existe.")
+
     return subdomain, suffix
 
 
