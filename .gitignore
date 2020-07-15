@@ -1,3 +1,4 @@
 *.txt
 UPDATE_ML_QUERY.bat
 __pycache__
+.idea/
