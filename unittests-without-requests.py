@@ -499,8 +499,8 @@ class TestIsReputable(unittest.TestCase):
         link1 = ML_scraper.get_link(INCORRECT_TAG)
         link2 = "https://www.mercadolivre.com.br/link_invalido_deve_dar_404"
         for rep in range(1, 6):
-            self.assertEqual(ML_scraper.is_reputable(link2, min_rep=rep), False)
             self.assertEqual(ML_scraper.is_reputable(link1, min_rep=rep), False)
+            self.assertEqual(ML_scraper.is_reputable(link2, min_rep=rep), False)
         self.assertEqual(ML_scraper.is_reputable(link1, min_rep=0), True)
         self.assertEqual(ML_scraper.is_reputable(link2, min_rep=0), True)
 

@@ -103,14 +103,20 @@ def get_all_products(pages, min_rep):
 
 
 def is_reputable(link, min_rep=3, aggressiveness=2):
-    sleep(0.5**aggressiveness)
-    product_page = BeautifulSoup(get(link).text, "html.parser")
-    thermometer = str(
-        product_page.find(class_="card-section seller-thermometer"))
-    THERM_LEVELS = ("newbie", "red", "orange",
-                    "yellow", "light_green", "green")[0:min_rep]
-    if any(badrep in thermometer for badrep in THERM_LEVELS):
-        return False
+    if min_rep > 0:
+        if not link:
+            return False
+
+        sleep(0.5**aggressiveness)
+        product = BeautifulSoup(get(link).text, "html.parser")
+
+        if "ui-pdp-other-sellers__title" not in str(product):
+            thermometer = product.find(class_="card-section seller-thermometer")
+            THERM_LEVELS = ("newbie", "red", "orange",
+                            "yellow", "light_green", "green")[0:min_rep]
+            if any(badrep in str(thermometer)
+                   for badrep in THERM_LEVELS) or thermometer == None:
+                return False
 
     return True
 
