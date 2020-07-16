@@ -6,7 +6,7 @@ from pickle import load
 from urllib.parse import quote
 from re import compile, search
 
-SKIP_PAGES = 1500  # 0 unless debugging
+SKIP_PAGES = 0  # 0 unless debugging
 INT32_MAX = 2147483647
 KEYS_PORTUGUESE = {'link': 'Link',
                    'title': 'Título',

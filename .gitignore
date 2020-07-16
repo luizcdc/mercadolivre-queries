@@ -2,3 +2,5 @@
 UPDATE_ML_QUERY.bat
 __pycache__/
 .idea/
+old_files/
+ml_brasil/__pycache__/
