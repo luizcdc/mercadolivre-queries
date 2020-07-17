@@ -9,7 +9,7 @@ from re import compile, search
 from . import categories
 
 SKIP_PAGES = 0  # 0 unless debugging
-INT32_MAX = 2147483647
+INT32_MAX = 2 ** 31 - 1
 
 try:
     with resources.open_binary(categories, "categories.pickle") as cat:
@@ -131,6 +131,7 @@ def get_cat(catid):
 
     return subdomain, suffix
 
+
 def get_all_products(pages, min_rep):
     products = [
         BeautifulSoup(page, "html.parser")
@@ -148,6 +149,7 @@ def get_all_products(pages, min_rep):
                 get_link(product), min_rep),
             "picture": get_picture(product)}
             for page in products for product in page]
+
 
 def get_search_pages(term, cat='0.0',
                      price_min=0, price_max=INT32_MAX,
