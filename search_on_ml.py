@@ -1,10 +1,16 @@
 import ml_brasil
 
 
+def format_price(price):
+    i = str(price[0])
+    c = ("0" + str(price[1])) if price[1] < 10 else str(price[1])
+    return f"R$ {i},{c}"
+
+
 def print_product(product):
     print(f"""\
     Título: {product['title']}
-    Preço: {product['price']}
+    Preço: {format_price(product['price'])}
     Em promoção: {"Sim" if product['in-sale'] else "Não"}
     Frete grátis: {"Sim" if product['free-shipping'] else "Não"}
     Boa reputação: {"Sim" if product['reputable'] else "Não"}
