@@ -22,12 +22,14 @@ except FileNotFoundError:
 
 
 def get_link(product):
-    LINK_CATCHER = compile(r"(https?://.+(?:MLB\d+|-_JM))")
+    LINK_CATCHER = compile(r"(https?://.+(?:MLB\d+\?|-_JM))")
     link = product.find(class_="item__info-title")
     if link:
         link = link.get("href").strip()
         link = search(LINK_CATCHER, link)
-        return link[0]
+        link = link[0]
+        link = link[:-1] if link[-1] == '?' else link
+        return link
     return ""
 
 
