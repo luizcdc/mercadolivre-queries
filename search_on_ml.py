@@ -8,15 +8,25 @@ def format_price(price):
 
 
 def print_product(product):
-    print(f"""\
-    Título: {product['title']}
-    Preço: {format_price(product['price'])}
-    Em promoção: {"Sim" if product['in-sale'] else "Não"}
-    Frete grátis: {"Sim" if product['free-shipping'] else "Não"}
-    Boa reputação: {"Sim" if product['reputable'] else "Não"}
-    Sem Juros: {"Sim" if product['no-interest'] else "Não"}
-    Link: {product['link']}
-    Imagem: {product['picture']}""")
+    print(f"Título: {product['title']}\n" +
+          f"Preço: {format_price(product['price'])}\n" +
+          f"Em promoção: {'Sim' if product['in-sale'] else 'Não'}" +
+          " " * 28 +
+          f"Frete grátis: {'Sim' if product['free-shipping'] else 'Não'}\n" +
+          f"Boa reputação: {'Sim' if product['reputable'] else 'Não'}" +
+          " " * 26 +
+          f"Sem Juros: {'Sim' if product['no-interest'] else 'Não'}\n" +
+          f"Link: {product['link'][8:]}\n" +  # doesn't print the https:// prefix
+          f"Imagem: {product['picture'][8:]}")  # doesn't print https://
+    # print(f"""\
+    # Título: {product['title']}
+    # Preço: {format_price(product['price'])}
+    # Em promoção: {"Sim" if product['in-sale'] else "Não"}
+    # Frete grátis: {"Sim" if product['free-shipping'] else "Não"}
+    # Boa reputação: {"Sim" if product['reputable'] else "Não"}
+    # Sem Juros: {"Sim" if product['no-interest'] else "Não"}
+    # Link: {product['link']}
+    # Imagem: {product['picture']}""")
 
 
 def print_cats():
