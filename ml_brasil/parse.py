@@ -110,6 +110,22 @@ def get_title(product):
 
 
 def get_price(product):
+    """Extracts the price from the product tag
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    tuple
+        If sucessful, returns the price of the product as a tuple, with
+        the first element of the tuple being the integer part of the
+        price, and the second being the fractional part. Otherwise, re-
+        turns the tuple (float('nan'), float('nan')).
+
+    """
     price_container = product.find(class_="price__container")
     if price_container:
         price_int = price_container.find(
