@@ -139,6 +139,20 @@ def get_price(product):
 
 
 def get_picture(product):
+    """Extracts the link for the picture from the product tag
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    str
+        An url for the product picture on MercadoLivre if successful,
+        an empty string otherwise.
+
+    """
     picture = ""
     image_tag = product.find(class_="item__image item__image--stack")
     if image_tag:
