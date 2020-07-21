@@ -1,3 +1,8 @@
+"""Request, extract and parse searches
+
+This module contains functions that treat raw extracted searches'
+content.
+"""
 import importlib.resources as resources
 import bs4
 from bs4 import BeautifulSoup
@@ -9,11 +14,36 @@ from re import compile, search
 from . import categories
 
 SKIP_PAGES = 0  # 0 unless debugging
+"""int: Sets how many pages will be skipped in a search
+
+This variable is useful for debugging purposes inside the function
+get_search_pages. When set to an integer value greater than zero, will
+skip that number of pages. Greatly speeds a search if only executing the
+search for testing purposes, due to the diminished number of pages from
+which to extract information.
+
+Example
+-------
+    If SKIP_PAGES == 15, get_search_pages will request page 1 of the
+    search, and then proceed to request page 16, skipping pages 2-15.
+    If successful, page 31 will be requested. This continues until the
+    answer is code 404, and then get_search_pages returns.
+"""
+
 INT32_MAX = 2 ** 31 - 1
+"""int: Maximum value that a 32-bit signed integer can have
+
+Used as a maximum value constant respecting the engeneering constraints
+of the MercadoLivre website.
+"""
 
 try:
     with resources.open_binary(categories, "categories.pickle") as cat:
         CATS = load(cat)
+        """list: The categories database
+
+        Please refer to the categories subpackage's documentation.
+        """
 except FileNotFoundError:
     raise FileNotFoundError("The categories.pickle database could not be "
                             "loaded. Try to generate a new updated data"
@@ -22,6 +52,29 @@ except FileNotFoundError:
 
 
 def get_link(product):
+    """Extracts the link for the product tag
+
+    As there are two types of listings in MercadoLivre (for products),
+    the "catalogue" type listing and the "standard" type listing, the
+    former ending with MLB112313123, and the latter ending with "-_JM",
+    the procedure executed here is to extract the raw href from the pro-
+    duct tag, which may contain irrelevant trailing information, and
+    using a regular expression, matching only the relevant part, and
+    returning that value which will be in the most compact and meaning-
+    ful form.
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    str
+        An url for the product listing on MercadoLivre if successful,
+        an empty string otherwise.
+
+    """
     LINK_CATCHER = compile(r"(https?://.+(?:MLB\d+\?|-_JM))")
     link = product.find(class_="item__info-title")
     if link:
@@ -34,6 +87,20 @@ def get_link(product):
 
 
 def get_title(product):
+    """Extracts the title from the product tag
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    str
+        The title of the product listing on MercadoLivre, an empty
+        string otherwise.
+
+    """
     title_tag = product.find(class_="main-title")
     if not title_tag:
         title_tag = ""
@@ -43,6 +110,22 @@ def get_title(product):
 
 
 def get_price(product):
+    """Extracts the price from the product tag
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    tuple
+        If sucessful, returns the price of the product as a tuple, with
+        the first element of the tuple being the integer part of the
+        price, and the second being the fractional part. Otherwise, re-
+        turns the tuple (float('nan'), float('nan')).
+
+    """
     price_container = product.find(class_="price__container")
     if price_container:
         price_int = price_container.find(
@@ -56,6 +139,20 @@ def get_price(product):
 
 
 def get_picture(product):
+    """Extracts the link for the picture from the product tag
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    str
+        An url for the product picture on MercadoLivre if successful,
+        an empty string otherwise.
+
+    """
     picture = ""
     image_tag = product.find(class_="item__image item__image--stack")
     if image_tag:
@@ -69,18 +166,98 @@ def get_picture(product):
 
 
 def is_no_interest(product):
+    """Verifies wether the installments for payment have interest
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    bool
+        True if the installments are interest-free, False otherwise.
+
+    """
     return "item-installments free-interest" in str(product)
 
 
 def has_free_shipping(product):
+    """Verifies wether the shipping of the product is free of charge
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    bool
+        True if the shipping is free, False otherwise.
+
+    """
     return "stack_column_item shipping highlighted" in str(product)
 
 
 def is_in_sale(product):
+    """Verifies wether the product's current price is discounted
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    bool
+        True if the current price is discounted from the full price,
+        False otherwise.
+
+    """
     return "item__discount" in str(product)
 
 
 def is_reputable(link, min_rep=3, aggressiveness=2):
+    """Verifies wether the seller's reputation is sufficient
+
+    The way is_reputable checks if a listing is from a reputable seller
+    is by requesting the product page from MercadoLivre, and checking
+    the reputation level of the seller. If min_rep is zero, this doesn't
+    need to be checked and the function can return True right away.
+
+    In 'catalogue' type listings this is not possible, but MercadoLivre
+    already filters most unreputable sellers from those listings, and
+    therefore these type of listings can always be considered reputable.
+
+    Parameters
+    ----------
+    link
+        The url for the product listing
+    min_rep
+        The reputation level threshold that a seller has to reach for
+        them to be considered reputable.
+    aggressiveness
+        The level of aggressiveness (speed) that the function will do
+        html requests. The higher its value, the shorter the delay be-
+        tween requests.
+
+    Returns
+    -------
+    bool
+        True if the listing has the minimum reputation required or is
+        one of the exceptional cases, False otherwise.
+
+    Note
+    ----
+    is_reputable is the main performance bottleneck of the package.
+    It is called once for every product in a search, which can mean
+    hundreds or up to a few thousands times. Almost every call makes an
+    html request, and then waits for a number of milisseconds. This is
+    necessary to avoid being ip blocked from MercadoLivre servers, but
+    adds a huge bottleneck to the package. Any optimization on this
+    function is very valuable.
+
+    """
     if min_rep > 0:
         if not link:
             return False
@@ -100,6 +277,27 @@ def is_reputable(link, min_rep=3, aggressiveness=2):
 
 
 def get_cat(catid):
+    """Fetches the category information from the database
+
+    Using the category id, fetches the information needed to perform
+    searches, namely the subdomain and suffix for the search url. If
+    the requested category does not exist, raises a ValueError.
+
+    Parameters
+    ----------
+    catid
+        A string in the format "X.Y" where X and Y are integers.
+
+    Returns
+    -------
+    subdomain
+        The subdomain of mercadolivre.com.br which is used for searches
+        in the requested category.
+    suffix
+        The suffix for mercadolivre.com.br which is used for searches in
+        the requested category.
+
+    """
     father_num, child_num = map(int, catid.split('.'))
     subdomain = False
     for father_cat in CATS:
@@ -116,6 +314,28 @@ def get_cat(catid):
 
 
 def get_all_products(pages, min_rep):
+    """Parses the pages to generate final results
+
+    Goes through the pages in the list returned by get_search_pages ex-
+    tracting each product from all the pages, and then extracting pro-
+    duct information from each product.
+
+    Parameters
+    ----------
+    pages
+        A list of strings which contain raw html from the pages of the
+        search results.
+    min_rep
+        The reputation level threshold that a seller has to reach for
+        them to be considered reputable.
+
+    Returns
+    -------
+    list[dict]
+        A list of which each element is a dict that represents a product
+        and it's pertaining information.
+
+    """
     products = [
         BeautifulSoup(page, "html.parser")
         .find_all(class_="results-item highlighted article stack product")
@@ -137,6 +357,39 @@ def get_all_products(pages, min_rep):
 def get_search_pages(term, cat='0.0',
                      price_min=0, price_max=INT32_MAX,
                      condition=0, aggressiveness=2):
+    """Searches in MercadoLivre with the specified arguments
+
+    This function does the requesting to MercadoLivre, returning every
+    result page as raw html strings in a list. Does not return pages
+    that contain no products.
+
+    Parameters
+    ----------
+    term
+        The search term. Trailing and leading spaces are stripped.
+    cat
+        The category number for the desired category for the products.
+    price_min
+        The minimum price of a listing for it to be included in the
+        results. Always a non-negative integer, lower than price_max.
+    price_max
+        The maximum price of a listing for it to be included in the
+        results. Always a non-negative integer, higher than price_min.
+    condition
+        Whether the product listings should to be new (1), used (2)
+        or either (0).
+    aggressiveness
+        The level of aggressiveness (speed) that the function will do
+        html requests. The higher its value, the shorter the delay be-
+        tween requests.
+
+    Returns
+    -------
+    list[str]
+        A list of which each element is a raw html strings of the search
+        result pages.
+
+    """
     CONDITIONS = ["", "_ITEM*CONDITION_2230284", "_ITEM*CONDITION_2230581"]
     subdomain, suffix = get_cat(cat)
     index = 1
