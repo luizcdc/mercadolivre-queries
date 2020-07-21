@@ -237,6 +237,46 @@ def get_all_products(pages, min_rep):
 
 
 def is_reputable(link, min_rep=3, aggressiveness=2):
+    """Verifies wether the seller's reputation is sufficient
+
+    The way is_reputable checks if a listing is from a reputable seller
+    is by requesting the product page from MercadoLivre, and checking
+    the reputation level of the seller. If min_rep is zero, this doesn't
+    need to be checked and the function can return True right away.
+
+    In 'catalogue' type listings this is not possible, but MercadoLivre
+    already filters most unreputable sellers from those listings, and
+    therefore these type of listings can always be considered reputable.
+
+    Parameters
+    ----------
+    link
+        The url for the product listing
+    min_rep
+        The reputation level threshold that a seller has to reach for
+        them to be considered reputable.
+    aggressiveness
+        The level of aggressiveness (speed) that the function will do
+        html requests. The higher, the shorter the delay between re-
+        quests.
+
+    Returns
+    -------
+    bool
+        True if the listing has the minimum reputation required or is
+        one of the exceptional cases, False otherwise.
+
+    Note
+    ----
+    is_reputable is the main performance bottleneck of the package.
+    It is called once for every product in a search, which can mean
+    hundreds or up to a few thousands times. Almost every call makes an
+    html request, and then waits for a number of milisseconds. This is
+    necessary to avoid being ip blocked from MercadoLivre servers, but
+    adds a huge bottleneck to the package. Any optimization on this
+    function is very valuable.
+
+    """
     if min_rep > 0:
         if not link:
             return False
