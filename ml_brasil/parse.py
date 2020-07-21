@@ -51,6 +51,10 @@ except FileNotFoundError:
                             "to reinstall the module.")
 
 
+class Product:
+    pass
+
+
 def get_link(product):
     """Extracts the link for the product tag
 
