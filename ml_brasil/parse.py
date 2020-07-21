@@ -166,14 +166,54 @@ def get_picture(product):
 
 
 def is_no_interest(product):
+    """Verifies wether the installments for payment have interest
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    bool
+        True if the installments are interest-free, False otherwise.
+
+    """
     return "item-installments free-interest" in str(product)
 
 
 def has_free_shipping(product):
+    """Verifies wether the shipping of the product is free of charge
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    bool
+        True if the shipping is free, False otherwise.
+
+    """
     return "stack_column_item shipping highlighted" in str(product)
 
 
 def is_in_sale(product):
+    """Verifies wether the product's current price is discounted
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    bool
+        True if the current price is discounted from the full price,
+        False otherwise.
+
+    """
     return "item__discount" in str(product)
 
 
