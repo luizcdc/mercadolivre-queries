@@ -257,8 +257,8 @@ def is_reputable(link, min_rep=3, aggressiveness=2):
         them to be considered reputable.
     aggressiveness
         The level of aggressiveness (speed) that the function will do
-        html requests. The higher, the shorter the delay between re-
-        quests.
+        html requests. The higher its value, the shorter the delay be-
+        tween requests.
 
     Returns
     -------
@@ -376,6 +376,39 @@ def get_all_products(pages, min_rep):
 def get_search_pages(term, cat='0.0',
                      price_min=0, price_max=INT32_MAX,
                      condition=0, aggressiveness=2):
+    """Searches in MercadoLivre with the specified arguments
+
+    This function does the requesting to MercadoLivre, returning every
+    result page as raw html strings in a list. Does not return pages
+    that contain no products.
+
+    Parameters
+    ----------
+    term
+        The search term. Trailing and leading spaces are stripped.
+    cat
+        The category number for the desired category for the products.
+    price_min
+        The minimum price of a listing for it to be included in the
+        results. Always a non-negative integer, lower than price_max.
+    price_max
+        The maximum price of a listing for it to be included in the
+        results. Always a non-negative integer, higher than price_min.
+    condition
+        Whether the product listings should to be new (1), used (2)
+        or either (0).
+    aggressiveness
+        The level of aggressiveness (speed) that the function will do
+        html requests. The higher its value, the shorter the delay be-
+        tween requests.
+
+    Returns
+    -------
+    list[str]
+        A list of which each element is a raw html strings of the search
+        result pages.
+
+    """
     CONDITIONS = ["", "_ITEM*CONDITION_2230284", "_ITEM*CONDITION_2230581"]
     subdomain, suffix = get_cat(cat)
     index = 1
