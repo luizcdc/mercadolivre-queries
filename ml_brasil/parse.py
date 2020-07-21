@@ -80,25 +80,6 @@ def is_in_sale(product):
     return "item__discount" in str(product)
 
 
-def get_all_products(pages, min_rep):
-    products = [
-        BeautifulSoup(page, "html.parser")
-        .find_all(class_="results-item highlighted article stack product")
-        for page in pages]
-
-    return [{
-            "link": get_link(product),
-            "title": get_title(product),
-            "price": get_price(product),
-            "no-interest": is_no_interest(product),
-            "free-shipping": has_free_shipping(product),
-            "in-sale": is_in_sale(product),
-            "reputable": is_reputable(
-                get_link(product), min_rep),
-            "picture": get_picture(product)}
-            for page in products for product in page]
-
-
 def is_reputable(link, min_rep=3, aggressiveness=2):
     if min_rep > 0:
         if not link:
