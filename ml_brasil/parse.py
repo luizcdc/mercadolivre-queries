@@ -296,6 +296,27 @@ def is_reputable(link, min_rep=3, aggressiveness=2):
 
 
 def get_cat(catid):
+    """Fetches the category information from the database
+
+    Using the category id, fetches the information needed to perform
+    searches, namely the subdomain and suffix for the search url. If
+    the requested category does not exist, raises a ValueError.
+
+    Parameters
+    ----------
+    catid
+        A string in the format "X.Y" where X and Y are integers.
+
+    Returns
+    -------
+    subdomain
+        The subdomain of mercadolivre.com.br which is used for searches
+        in the requested category.
+    suffix
+        The suffix for mercadolivre.com.br which is used for searches in
+        the requested category.
+
+    """
     father_num, child_num = map(int, catid.split('.'))
     subdomain = False
     for father_cat in CATS:
