@@ -60,4 +60,8 @@ def ML_query(search_term, order=1,
                                                              condition,
                                                              aggressiveness),
                                       min_rep)
-    return sorted(products, key=lambda p: p["price"], reverse=(order == 2))
+    if order:
+        products = sorted(products,
+                          key=lambda p: p["price"],
+                          reverse=(order == 2))
+    return products
