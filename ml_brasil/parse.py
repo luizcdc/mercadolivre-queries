@@ -52,6 +52,28 @@ except FileNotFoundError:
 
 
 def get_link(product):
+    """Returns the link for the product tag
+
+    As there are two types of listings in MercadoLivre (for products),
+    the "catalogue" type listing and the "standard" type listing, the
+    former ending with MLB112313123, and the latter ending with "-_JM",
+    the procedure executed here is to extract the raw href from the pro-
+    duct tag, which may contain irrelevant trailing information, and
+    using a regular expression, matching only the relevant part, and
+    returning that value which will be in the most compact and meaning-
+    ful form.
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    str
+        An url for the product listing on MercadoLivre.
+
+    """
     LINK_CATCHER = compile(r"(https?://.+(?:MLB\d+\?|-_JM))")
     link = product.find(class_="item__info-title")
     if link:
