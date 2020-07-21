@@ -333,6 +333,28 @@ def get_cat(catid):
 
 
 def get_all_products(pages, min_rep):
+    """Parses the pages to generate final results
+
+    Goes through the pages in the list returned by get_search_pages ex-
+    tracting each product from all the pages, and then extracting pro-
+    duct information from each product.
+
+    Parameters
+    ----------
+    pages
+        A list of strings which contain raw html from the pages of the
+        search results.
+    min_rep
+        The reputation level threshold that a seller has to reach for
+        them to be considered reputable.
+
+    Returns
+    -------
+    list[dict]
+        A list of which each element is a dict that represents a product
+        and it's pertaining information.
+
+    """
     products = [
         BeautifulSoup(page, "html.parser")
         .find_all(class_="results-item highlighted article stack product")
