@@ -26,7 +26,7 @@ Example
 -------
     If SKIP_PAGES == 15, get_search_pages will request page 1 of the
     search, and then proceed to request page 16, skipping pages 2-15.
-    If sucessful, page 31 will be requested. This continues until the
+    If successful, page 31 will be requested. This continues until the
     answer is code 404, and then get_search_pages returns.
 """
 
@@ -52,7 +52,7 @@ except FileNotFoundError:
 
 
 def get_link(product):
-    """Returns the link for the product tag
+    """Extracts the link for the product tag
 
     As there are two types of listings in MercadoLivre (for products),
     the "catalogue" type listing and the "standard" type listing, the
@@ -71,7 +71,8 @@ def get_link(product):
     Returns
     -------
     str
-        An url for the product listing on MercadoLivre.
+        An url for the product listing on MercadoLivre if successful,
+        an empty string otherwise.
 
     """
     LINK_CATCHER = compile(r"(https?://.+(?:MLB\d+\?|-_JM))")
@@ -86,6 +87,20 @@ def get_link(product):
 
 
 def get_title(product):
+    """Extracts the title from the product tag
+
+    Parameters
+    ----------
+    product
+        A product html tag extracted from the search pages.
+
+    Returns
+    -------
+    str
+        The title of the product listing on MercadoLivre, an empty
+        string otherwise.
+
+    """
     title_tag = product.find(class_="main-title")
     if not title_tag:
         title_tag = ""
