@@ -1,3 +1,8 @@
+"""Request, extract and parse searches
+
+This module contains functions that treat raw extracted searches'
+content.
+"""
 import importlib.resources as resources
 import bs4
 from bs4 import BeautifulSoup
@@ -9,11 +14,36 @@ from re import compile, search
 from . import categories
 
 SKIP_PAGES = 0  # 0 unless debugging
+"""int: Sets how many pages will be skipped in a search
+
+This variable is useful for debugging purposes inside the function
+get_search_pages. When set to an integer value greater than zero, will
+skip that number of pages. Greatly speeds a search if only executing the
+search for testing purposes, due to the diminished number of pages from
+which to extract information.
+
+Example
+-------
+    If SKIP_PAGES == 15, get_search_pages will request page 1 of the
+    search, and then proceed to request page 16, skipping pages 2-15.
+    If sucessful, page 31 will be requested. This continues until the
+    answer is code 404, and then get_search_pages returns.
+"""
+
 INT32_MAX = 2 ** 31 - 1
+"""int: Maximum value that a 32-bit signed integer can have
+
+Used as a maximum value constant respecting the engeneering constraints
+of the MercadoLivre website.
+"""
 
 try:
     with resources.open_binary(categories, "categories.pickle") as cat:
         CATS = load(cat)
+        """list: The categories database
+
+        Please refer to the categories subpackage's documentation.
+        """
 except FileNotFoundError:
     raise FileNotFoundError("The categories.pickle database could not be "
                             "loaded. Try to generate a new updated data"
