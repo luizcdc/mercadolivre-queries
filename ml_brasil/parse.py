@@ -4,7 +4,6 @@ This module contains functions that treat raw extracted searches'
 content.
 """
 import importlib.resources as resources
-import bs4
 from bs4 import BeautifulSoup
 from requests import get
 from time import sleep
@@ -52,7 +51,21 @@ except FileNotFoundError:
 
 
 class Product:
-    pass
+    def __init__(self, product_tag, process=True, check_rep=True, min_rep=3):
+        self.html_tag = product_tag
+        if process:
+            self.processed = True
+            self.link = get_link(product_tag)
+            self.title = get_title(product_tag)
+            self.price = get_price(product_tag)
+            self.interest = is_no_interest(product_tag)
+            self.free_shipping = has_free_shipping(product_tag)
+            self.in_sale = is_in_sale(product_tag)
+            self.picture = get_picture(product_tag)
+            self.reputable = is_reputable(get_link(product_tag),
+                                          min_rep) if check_rep else None
+        else:
+            self.processed = False
 
 
 def get_link(product):
@@ -274,7 +287,7 @@ def is_reputable(link, min_rep=3, aggressiveness=2):
             THERM_LEVELS = ("newbie", "red", "orange",
                             "yellow", "light_green", "green")[0:min_rep]
             if any(badrep in str(thermometer)
-                   for badrep in THERM_LEVELS) or thermometer == None:
+                   for badrep in THERM_LEVELS) or thermometer is None:
                 return False
 
     return True
