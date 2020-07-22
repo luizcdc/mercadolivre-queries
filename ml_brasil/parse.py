@@ -51,10 +51,40 @@ except FileNotFoundError:
 
 
 class Product:
+    """A product listing in MercadoLivre Brasil.
+
+    A Product object has two states: processed and not processed. While
+    not processed, only self._html_tag and self.processed have been
+    assigned, with the latter assuming the boolean value False. When
+    processed, either all other attributes or all but self.reputable
+    have been assigned values extracted from self._html_tag.
+    """
+
     def __init__(self, product_tag, process=True, check_rep=True, min_rep=3):
-        self.html_tag = product_tag
+        """Initialize Product with the html tag.
+
+        self._html_tag is always initialized with the bs4 html tag for
+        the product. The initialization of other attributes can be de-
+        layed until the first time they are acessed. To do this, process
+        and/or check_rep need to be specified False.
+
+        Parameters
+        ----------
+        product_tag
+            The bs4 html tag for the product.
+        process
+            Whether the values for the attributes of the product are to
+            be obtained in initialization or later on.
+        check_rep
+            Whether the reputation of the seller is to be verified in
+            initialization or later on.
+        min_rep
+            The reputation level threshold that a seller of the product
+            has to reach for them to be considered reputable.
+
+        """
+        self._html_tag = product_tag
         if process:
-            self.processed = True
             self.link = get_link(product_tag)
             self.title = get_title(product_tag)
             self.price = get_price(product_tag)
@@ -62,10 +92,8 @@ class Product:
             self.free_shipping = has_free_shipping(product_tag)
             self.in_sale = is_in_sale(product_tag)
             self.picture = get_picture(product_tag)
-            self.reputable = is_reputable(get_link(product_tag),
-                                          min_rep) if check_rep else None
-        else:
-            self.processed = False
+            if check_rep:
+                self.reputable = is_reputable(get_link(product_tag), min_rep)
 
 
 def get_link(product):
@@ -149,7 +177,8 @@ def get_price(product):
             class_="price__fraction").contents[0].strip()
         price_int = int(float(price_int) * (1 if len(price_int) < 4 else 1000))
         price_cents = price_container.find(class_="price__decimals")
-        price_cents = 0 if not price_cents else int(price_cents.contents[0].strip())
+        price_cents = 0 if not price_cents else int(price_cents
+                                                    .contents[0].strip())
     else:
         price_int, price_cents = float('nan'), float('nan')
     return (price_int, price_cents)
@@ -283,7 +312,8 @@ def is_reputable(link, min_rep=3, aggressiveness=2):
         product = BeautifulSoup(get(link).text, "html.parser")
 
         if "ui-pdp-other-sellers__title" not in str(product):
-            thermometer = product.find(class_="card-section seller-thermometer")
+            thermometer = (product
+                           .find(class_="card-section seller-thermometer"))
             THERM_LEVELS = ("newbie", "red", "orange",
                             "yellow", "light_green", "green")[0:min_rep]
             if any(badrep in str(thermometer)
