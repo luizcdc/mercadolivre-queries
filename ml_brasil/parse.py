@@ -53,11 +53,9 @@ except FileNotFoundError:
 class Product:
     """A product listing in MercadoLivre Brasil.
 
-    A Product object has two states: processed and not processed. While
-    not processed, only self._html_tag and self.processed have been
-    assigned, with the latter assuming the boolean value False. When
-    processed, either all other attributes or all but self.reputable
-    have been assigned values extracted from self._html_tag.
+    All data about a product object can be inferred by its html tag and
+    its product page, acessible through its url.
+
     """
 
     def __init__(self, product_tag, process=True, check_rep=True, min_rep=3):
