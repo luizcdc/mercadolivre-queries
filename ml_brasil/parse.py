@@ -93,6 +93,48 @@ class Product:
             if check_rep:
                 self.reputable = is_reputable(get_link(product_tag), min_rep)
 
+    @property
+    def link(self):
+        """str: The link for the product listing.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts the link for the listing
+        from self._html_tag.
+
+        """
+        if not hasattr(self, '_link'):
+            self._link = self._extract_link()
+        return self._link
+
+    def _extract_link(self):
+        """Extracts the link for the product tag.
+
+        As there are two types of listings in MercadoLivre (for products),
+        the "catalogue" type listing and the "standard" type listing, the
+        former ending with MLB112313123, and the latter ending with "-_JM",
+        the procedure executed here is to extract the raw href from the pro-
+        duct tag, which may contain irrelevant trailing information, and
+        using a regular expression, matching only the relevant part, and
+        returning that value which will be in the most compact and meaning-
+        ful form.
+
+        Returns
+        -------
+        str
+            An url for the product listing on MercadoLivre if successful,
+            an empty string otherwise.
+
+        """
+        LINK_CATCHER = compile(r"(https?://.+(?:MLB\d+\?|-_JM))")
+        link = self._html_tag.find(class_="item__info-title")
+        if link:
+            link = link.get("href").strip()
+            link = search(LINK_CATCHER, link)
+            link = link[0]
+            link = link[:-1] if link[-1] == '?' else link
+            return link
+        return ""
+
 
 def get_link(product):
     """Extracts the link for the product tag
