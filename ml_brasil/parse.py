@@ -125,6 +125,19 @@ class Product:
             raise ValueError("Type must be str")
         self._title = value
 
+    @property
+    def price(self):
+        """tuple[int,int]: The price for the product listing.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts the price for the listing
+        from self._html_tag.
+
+        """
+        if not hasattr(self, '_price'):
+            self._price = self._extract_price()
+        return self._price
+
     def _extract_link(self):
         """Extract the link for the product tag.
 
@@ -170,6 +183,31 @@ class Product:
         else:
             title_tag = title_tag.contents[0].strip()
         return title_tag
+
+    def _extract_price(self):
+        """Extract the price from the product tag.
+
+        Returns
+        -------
+        tuple
+            If sucessful, returns the price of the product as a tuple, with
+            the first element of the tuple being the integer part of the
+            price, and the second being the fractional part. Otherwise, re-
+            turns the tuple (float('nan'), float('nan')).
+
+        """
+        price_container = self._html_tag.find(class_="price__container")
+        if price_container:
+            price_int = price_container.find(
+                class_="price__fraction").contents[0].strip()
+            price_int = int(float(price_int) *
+                            (1 if len(price_int) < 4 else 1000))
+            price_cents = price_container.find(class_="price__decimals")
+            price_cents = 0 if not price_cents else int(price_cents
+                                                        .contents[0].strip())
+        else:
+            price_int, price_cents = float('nan'), float('nan')
+        return (price_int, price_cents)
 
 
 def get_link(product):
