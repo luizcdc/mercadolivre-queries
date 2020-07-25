@@ -106,8 +106,21 @@ class Product:
             self._link = self._extract_link()
         return self._link
 
+    @property
+    def title(self):
+        """str: The title for the product listing.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts the title for the listing
+        from self._html_tag.
+
+        """
+        if not hasattr(self, '_title'):
+            self._title = self._extract_title()
+        return self._title
+
     def _extract_link(self):
-        """Extracts the link for the product tag.
+        """Extract the link for the product tag.
 
         As there are two types of listings in MercadoLivre (for products),
         the "catalogue" type listing and the "standard" type listing, the
@@ -134,6 +147,23 @@ class Product:
             link = link[:-1] if link[-1] == '?' else link
             return link
         return ""
+
+    def _extract_title(self):
+        """Extract the title from the product tag.
+
+        Returns
+        -------
+        str
+            The title of the product listing on MercadoLivre, an empty
+            string otherwise.
+
+        """
+        title_tag = self._html_tag.find(class_="main-title")
+        if not title_tag:
+            title_tag = ""
+        else:
+            title_tag = title_tag.contents[0].strip()
+        return title_tag
 
 
 def get_link(product):
