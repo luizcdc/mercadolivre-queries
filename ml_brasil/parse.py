@@ -151,6 +151,19 @@ class Product:
             self._interest = self._is_no_interest()
         return self._interest
 
+    @property
+    def free_shipping(self):
+        """bool: Whether the shipping of the product is free of charge.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts the shipping information
+        for the listing from self._html_tag.
+
+        """
+        if not hasattr(self, '_free_shipping'):
+            self._free_shipping = self._has_free_shipping()
+        return self._free_shipping
+
     def _extract_link(self):
         """Extract the link for the product tag.
 
@@ -232,6 +245,17 @@ class Product:
 
         """
         return "item-installments free-interest" in str(self._html_tag)
+
+    def _has_free_shipping(self):
+        """Verify wether the shipping of the product is free of charge.
+
+        Returns
+        -------
+        bool
+            True if the shipping is free, False otherwise.
+
+        """
+        return "stack_column_item shipping highlighted" in str(self._html_tag)
 
 
 def get_link(product):
