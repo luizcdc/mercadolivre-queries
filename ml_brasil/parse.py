@@ -92,6 +92,7 @@ class Product:
         """
         self._html_tag = product_tag
         if process:
+            # TODO: IMPLEMENT SETTING BEHAVIOR IN INIT
             self.link = get_link(product_tag)
             self.title = get_title(product_tag)
             self.price = get_price(product_tag)
