@@ -57,8 +57,17 @@ class Product:
     its product page, acessible through its url.
 
     """
+    min_rep = 3
+    """The minimum reputation for a seller to be reputable."""
+    aggressiveness = 2
+    """The speed with which html requests will be performed."""
 
-    def __init__(self, product_tag, process=True, check_rep=True, min_rep=3):
+    _THERMOMETER_LEVELS = ("newbie", "red",
+                           "orange", "yellow",
+                           "light_green", "green")
+    """The 6 possible level for the reputation of a seller, in order."""
+
+    def __init__(self, product_tag, process=True, check_rep=True):
         """Initialize Product with the html tag.
 
         self._html_tag is always initialized with the bs4 html tag for
@@ -91,7 +100,8 @@ class Product:
             self.in_sale = is_in_sale(product_tag)
             self.picture = get_picture(product_tag)
             if check_rep:
-                self.reputable = is_reputable(get_link(product_tag), min_rep)
+                self.reputable = is_reputable(get_link(product_tag),
+                                              self.min_rep)
 
     @property
     def link(self):
@@ -189,6 +199,20 @@ class Product:
         if not hasattr(self, '_picture'):
             self._picture = self._extract_picture()
         return self._picture
+
+    @property
+    def reputable(self):
+        """bool: Whether the product's seller is reputable.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts whether the seller is
+        reputable by performing an html request for the listing page,
+        which is a costly operation.
+
+        """
+        if not hasattr(self, '_reputable'):
+            self._reputable = self._is_reputable()
+            return self._reputable
 
     def _extract_link(self):
         """Extract the link for the product tag.
@@ -315,6 +339,62 @@ class Product:
                 picture = ""
 
         return picture
+
+    def _is_reputable(self):
+        """Verifies wether the seller's reputation is sufficient
+
+        The way is_reputable checks if a listing is from a reputable seller
+        is by requesting the product page from MercadoLivre, and checking
+        the reputation level of the seller. If min_rep is zero, this doesn't
+        need to be checked and the function can return True right away.
+
+        In 'catalogue' type listings this is not possible, but MercadoLivre
+        already filters most unreputable sellers from those listings, and
+        therefore these type of listings can always be considered reputable.
+
+        Parameters
+        ----------
+        min_rep
+            The reputation level threshold that a seller has to reach for
+            them to be considered reputable.
+        aggressiveness
+            The level of aggressiveness (speed) that the function will do
+            html requests. The higher its value, the shorter the delay be-
+            tween requests.
+
+        Returns
+        -------
+        bool
+            True if the listing has the minimum reputation required or is
+            one of the exceptional cases, False otherwise.
+
+        Note
+        ----
+        _is_reputable is the main performance bottleneck of the package.
+        It is called once for every product in a search, which can mean
+        hundreds or up to a few thousands times. Almost every call makes an
+        html request, and then waits for a number of milisseconds. This is
+        necessary to avoid being ip blocked from MercadoLivre servers, but
+        adds a huge bottleneck to the package. Any optimization on this
+        function is very valuable.
+
+        """
+        if self.min_rep > 0:
+            if not self.link:
+                return False
+
+            sleep(0.5**self.aggressiveness)
+            product_page = BeautifulSoup(get(self.link).text, "html.parser")
+
+            if "ui-pdp-other-sellers__title" not in str(product_page):
+                thermometer = (product_page
+                               .find(class_="card-section seller-thermometer"))
+                therm_levels = self._THERMOMETER_LEVELS[0:self.min_rep]
+                if any(badrep in str(thermometer)
+                       for badrep in therm_levels) or thermometer is None:
+                    return False
+
+        return True
 
 
 def get_link(product):
