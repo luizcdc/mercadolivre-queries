@@ -86,7 +86,7 @@ class Product:
             self.link = get_link(product_tag)
             self.title = get_title(product_tag)
             self.price = get_price(product_tag)
-            self.interest = is_no_interest(product_tag)
+            self.no_interest = is_no_interest(product_tag)
             self.free_shipping = has_free_shipping(product_tag)
             self.in_sale = is_in_sale(product_tag)
             self.picture = get_picture(product_tag)
@@ -139,17 +139,17 @@ class Product:
         return self._price
 
     @property
-    def interest(self):
-        """bool: Whether there is interest on the installments for the payment.
+    def no_interest(self):
+        """bool: Whether payment in installments is interest free.
 
         In case the property was not initialized in __init__, in the
-        first time it is accessed, it extracts the interest for the listing
+        first time it is accessed, it extracts the interest information
         from self._html_tag.
 
         """
-        if not hasattr(self, '_interest'):
-            self._interest = self._is_no_interest()
-        return self._interest
+        if not hasattr(self, '_no_interest'):
+            self._no_interest = self._is_no_interest()
+        return self._no_interest
 
     @property
     def free_shipping(self):
@@ -163,6 +163,19 @@ class Product:
         if not hasattr(self, '_free_shipping'):
             self._free_shipping = self._has_free_shipping()
         return self._free_shipping
+
+    @property
+    def in_sale(self):
+        """bool: Whether product's price is discounted at the moment.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts in self._html_tag the
+        value for in_sale.
+
+        """
+        if not hasattr(self, '_in_sale'):
+            self._in_sale = self._is_in_sale()
+        return self._in_sale
 
     def _extract_link(self):
         """Extract the link for the product tag.
@@ -256,6 +269,18 @@ class Product:
 
         """
         return "stack_column_item shipping highlighted" in str(self._html_tag)
+
+    def _is_in_sale(self):
+        """Verify wether the product's current price is discounted.
+
+        Returns
+        -------
+        bool
+            True if the current price is discounted from the full price,
+            False otherwise.
+
+        """
+        return "item__discount" in str(self._html_tag)
 
 
 def get_link(product):
