@@ -119,6 +119,12 @@ class Product:
             self._title = self._extract_title()
         return self._title
 
+    @title.setter
+    def title(self, value):
+        if not isinstance(value, str):
+            raise ValueError("Type must be str")
+        self._title = value
+
     def _extract_link(self):
         """Extract the link for the product tag.
 
