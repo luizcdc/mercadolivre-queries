@@ -138,6 +138,19 @@ class Product:
             self._price = self._extract_price()
         return self._price
 
+    @property
+    def interest(self):
+        """bool: Whether there is interest on the installments for the payment.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts the interest for the listing
+        from self._html_tag.
+
+        """
+        if not hasattr(self, '_interest'):
+            self._interest = self._is_no_interest()
+        return self._interest
+
     def _extract_link(self):
         """Extract the link for the product tag.
 
@@ -208,6 +221,17 @@ class Product:
         else:
             price_int, price_cents = float('nan'), float('nan')
         return (price_int, price_cents)
+
+    def _is_no_interest(self):
+        """Verify wether the installments for payment have interest.
+
+        Returns
+        -------
+        bool
+            True if the installments are interest-free, False otherwise.
+
+        """
+        return "item-installments free-interest" in str(self._html_tag)
 
 
 def get_link(product):
