@@ -177,6 +177,19 @@ class Product:
             self._in_sale = self._is_in_sale()
         return self._in_sale
 
+    @property
+    def picture(self):
+        """str: The picture for the product listing.
+
+        In case the property was not initialized in __init__, in the
+        first time it is accessed, it extracts the picture for the lis-
+        ting from self._html_tag.
+
+        """
+        if not hasattr(self, '_picture'):
+            self._picture = self._extract_picture()
+        return self._picture
+
     def _extract_link(self):
         """Extract the link for the product tag.
 
@@ -281,6 +294,27 @@ class Product:
 
         """
         return "item__discount" in str(self._html_tag)
+
+    def _extract_picture(self):
+        """Extract the link for the picture from the product tag.
+
+        Returns
+        -------
+        str
+            An url for the product picture on MercadoLivre if success-
+            ful, an empty string otherwise.
+
+        """
+        picture = ""
+        img_tag = self._html_tag.find(class_="item__image item__image--stack")
+        if img_tag:
+            picture = img_tag.find("img").get("src")
+            if not picture:
+                picture = img_tag.find("img").get("data-src")
+            if not picture:
+                picture = ""
+
+        return picture
 
 
 def get_link(product):
