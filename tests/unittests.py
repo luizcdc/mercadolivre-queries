@@ -3,7 +3,6 @@ from re import search, match, compile
 from bs4 import BeautifulSoup
 from random import choice, randint
 from math import isnan
-from pickle import load
 import sys
 
 try:
@@ -256,11 +255,13 @@ class TestExtractLink(unittest.TestCase):
         which allows for the methods that rely on it to handle it
         accordingly.
 
-        This test should not test whether if when the argument is of
-        incorrect type it returns an empty string, but simply when an
-        incorrect/corrupted/different tag from the format this method
-        was made too work with is passed as an argument, an empty string
-        is returned.
+        This test should not test whether if when the Product was ini-
+        tialized with arguments of the incorrect type it returns an
+        empty string, but simply when an incorrect/corrupted/different
+        tag from the format this method was made too work with is pas-
+        sed as an argument to Product's __init__, an empty string is
+        returned.
+
         """
         self.assertEqual(INCORRECT_OBJECT._extract_link(), "")
 
@@ -300,11 +301,13 @@ class TestExtractTitle(unittest.TestCase):
     def test_empty_string_on_failure(self):
         """Test that _extract_title returns empty string when it fails.
 
-        This test should not test whether if when the argument is of
-        incorrect type it returns an empty string, but simply when an
-        incorrect/corrupted/different tag from the format this method
-        was made too work with is passed as an argument, an empty string
-        is returned.
+        This test should not test whether if when the Product was ini-
+        tialized with arguments of the incorrect type it returns an
+        empty string, but simply when an incorrect/corrupted/different
+        tag from the format this method was made too work with is pas-
+        sed as an argument to Product's __init__, an empty string is
+        returned.
+
         """
         self.assertEqual(INCORRECT_OBJECT._extract_title(), "")
 
