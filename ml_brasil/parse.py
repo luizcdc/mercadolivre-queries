@@ -281,8 +281,7 @@ class Product:
         if price_container:
             price_int = price_container.find(
                 class_="price__fraction").contents[0].strip()
-            price_int = int(float(price_int) *
-                            (1 if len(price_int) < 4 else 1000))
+            price_int = int(price_int.replace('.', ''))
             price_cents = price_container.find(class_="price__decimals")
             price_cents = 0 if not price_cents else int(price_cents
                                                         .contents[0].strip())
