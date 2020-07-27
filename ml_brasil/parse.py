@@ -57,6 +57,7 @@ class Product:
     its product page, acessible through its url.
 
     """
+
     min_rep = 3
     """The minimum reputation for a seller to be reputable."""
     aggressiveness = 2
@@ -95,16 +96,16 @@ class Product:
         """
         self._html_tag = product_tag
         if process:
-            # TODO: IMPLEMENT SETTING BEHAVIOR IN INIT
-            self.link = self._extract_link()
-            self.title = self._extract_title()
-            self.price = self._extract_price()
-            self.no_interest = self._is_no_interest()
-            self.free_shipping = self._has_free_shipping()
-            self.in_sale = self._is_in_sale()
-            self.picture = self._extract_picture()
+            # accessing the attribute for the first time sets it
+            self.link
+            self.title
+            self.price
+            self.no_interest
+            self.free_shipping
+            self.in_sale
+            self.picture
             if check_rep:
-                self.reputable = self._is_reputable()
+                self.reputable
 
     @property
     def link(self):
@@ -215,7 +216,8 @@ class Product:
         """
         if not hasattr(self, '_reputable'):
             self._reputable = self._is_reputable()
-            return self._reputable
+
+        return self._reputable
 
     def _extract_link(self):
         """Extract the link for the product tag.
@@ -387,7 +389,6 @@ class Product:
                 if any(badrep in str(thermometer)
                        for badrep in therm_levels) or thermometer is None:
                     return False
-
         return True
 
     def _format_price(self):
