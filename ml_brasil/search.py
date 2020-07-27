@@ -1,9 +1,10 @@
-"""Functions to perform searches on MercadoLivre
+"""Functions to perform searches on MercadoLivre.
 
 This module is the search interface of the package. Through ML_query,
 the user may request a search with only the search term, and optional
-keyword arguments. The results come already processed, in their final
-form.
+keyword arguments. The results by default come already processed, in
+their final form, but this behaviour can be changed with the 'process'
+argument in ML_query.
 """
 
 from . import parse
