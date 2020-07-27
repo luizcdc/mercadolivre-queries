@@ -11,25 +11,28 @@ try:
     import ml_brasil
 except ModuleNotFoundError:
     raise ModuleNotFoundError("Could not import ml_brasil package. Either "
-                              "install the package on your local python package"
-                              " directory, or install the package in the "
-                              "directory exactly one level above this folder.")
+                              "install the package on your local python "
+                              "package directory, or install the package in "
+                              "the directory exactly one level above this "
+                              "folder.")
 
 backup_CATS = ml_brasil.parse.CATS.copy()
 
 product = """<li class="results-item highlighted article stack product "> <div class="rowItem item product-item highlighted item--stack new with-reviews to-item has-variations" id="MLB1543163640"><div class="item__image item__image--stack"> <div class="images-viewer" item-url="https://www.mercadolivre.com.br/iphone-11-128-gb-preto-4-gb-ram/p/MLB15149567?source=search#searchVariation=MLB15149567&amp;position=1&amp;type=product&amp;tracking_id=b008d681-98e3-4479-90c6-98bd291f30f6" item-id="MLB1543163640" product-id="MLB15149567"> <div class="image-content"> <a href="https://www.mercadolivre.com.br/iphone-11-128-gb-preto-4-gb-ram/p/MLB15149567?source=search#searchVariation=MLB15149567&amp;position=1&amp;type=product&amp;tracking_id=b008d681-98e3-4479-90c6-98bd291f30f6" class="figure item-image item__js-link"> <img class="lazy-load" width="160" height="160" alt="iPhone 11 128 GB Preto 4 GB RAM" src="https://http2.mlstatic.com/D_NQ_NP_678481-MLA42453875909_072020-V.webp"> </a> </div> </div></div><div class="item__info-container highlighted "> <div class="item__info item--show-right-col "> <div class="item__highlight__container"> <div class="item__highlight item__highlight--deal" style="color: rgb(255, 255, 255); background: rgb(52, 131, 250); --darkreader-inline-color:#e8e6e3; --darkreader-inline-bgimage: initial; --darkreader-inline-bgcolor:#0447ac;" data-darkreader-inline-color="" data-darkreader-inline-bgimage="" data-darkreader-inline-bgcolor=""> Enviando normalmente </div> </div><h2 class="item__title list-view-item-title"> <a href="https://www.mercadolivre.com.br/iphone-11-128-gb-preto-4-gb-ram/p/MLB15149567?source=search#searchVariation=MLB15149567&amp;position=1&amp;type=product&amp;tracking_id=b008d681-98e3-4479-90c6-98bd291f30f6" class="item__info-title"> <span class="main-title"> iPhone 11 128 GB Preto 4 GB RAM </span> </a> <div class="item__brand"> <a class="item__brand-link" href="https://loja.mercadolivre.com.br/fast-shop"> <span class="item__brand-title-tos"> por Fast Shop </span> </a> </div></h2> <div class="price__container"> <span class="price-old" itemprop="price-old"> <del> R$&nbsp;6.099 </del> </span><div class="item__price item__price-discount"> <span class="price__symbol">R$</span> <span class="price__fraction">4.629</span></div> <div class="item__discount ">24% OFF</div> </div> <div class="item__stack_column highlighted"> <div class="item__stack_column__info"> <div class="stack_column_item installments highlighted"><span class="item-installments free-interest"> <span class="item-installments-multiplier"> 12x </span> <span class="item-installments-price"> R$ 385 <sup class="installment__decimals">75</sup> </span> <span class="item-installments-interest"> sem juros </span></span> </div> <div class="stack_column_item status"> <div class="item__status"> <div class="item__condition"> </div> </div> </div> </div> </div> <div class="stack_colum_right without-attributes with-reviews"> <div class="item__reviews"> <div class="stars"> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> <div class="star star-icon-full"></div> </div> <div class="item__reviews-total">232</div></div> <div class="stack_column_right__bottom item__has-variations"> <div class="variation-picker__container"> <div class="ui-dropdown custom"> <input type="checkbox" id="dropdown-variations-0" class="dropdown-trigger variation-picker__trigger" autocomplete="off" hidden="" data-id="MLB1543163640"> <label for="dropdown-variations-0" class="ui-dropdown__link"> <span class="variation-picker__label">Cor: </span> <span class="ui-dropdown__display variation-picker__label variation-picker__label-bold">Preto</span> <div class="ui-dropdown__indicator"></div> </label> <div class="ui-dropdown__content dropdown__variations-content variation-picker cursor-wait variation-picker__size-3" data-size="3"> <ul class=""> <li id="MLB15149567" class="attrBox skeleton__box--0 selected-option"> <img class="variation-picker__img" title="Preto" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_857283-MLA42453875910_072020-S.webp"></li> <li id="MLB15149572" class="attrBox skeleton__box--3 "> <img class="variation-picker__img" title="(Product)Red" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_608338-MLA42453875933_072020-S.webp"></li> <li id="MLB15149568" class="attrBox skeleton__box--5 "> <img class="variation-picker__img" title="Branco" width="36" height="36" src="https://http2.mlstatic.com/D_Q_NP_899930-MLA42453930760_072020-S.webp"></li></ul> </div> </div> </div> </div> </div> </div></div> <form class="item__bookmark-form" action="/search/bookmarks/MLB1543163640/make" method="post" id="bookmarkForm"> <button type="submit" class="bookmarks favorite " data-id="MLB1543163640"> <div class="item__bookmark"> <div class="icon"></div> </div> </button> <input type="hidden" name="method" value="add"> <input type="hidden" name="itemId" value="MLB1543163640"> <input type="hidden" name="_csrf" value="cbe9313a-32d9-4618-bc3d-c0bb7091ebce"> </form> </div></li>"""
-PRODUCT_TAG = BeautifulSoup(product, "html.parser")
-INCORRECT_TAG = BeautifulSoup("<span class=\"price__symbol\">R$</span>",
-                              "html.parser")
-URL_RE = compile("https?://(.+\.)?.+\..+")
-# this raw html was extracted from a listing of the iPhone 11. It was chosen be-
-# cause usually an iPhone stays being commercialized for many years after its
+# this raw html was extracted from a listing of the iPhone 11. It was chosen
+# because usually an iPhone stays being commercialized for many years after its
 # launch, meaning that is less likely that the link will break in the next 5
 # years
+PRODUCT_TAG = BeautifulSoup(product, "html.parser")
+PRODUCT_OBJECT = ml_brasil.parse.Product(PRODUCT_TAG, process=False)
+INCORRECT_TAG = BeautifulSoup("<span class=\"price__symbol\">R$</span>",
+                              "html.parser")
+INCORRECT_OBJECT = ml_brasil.parse.Product(INCORRECT_TAG, process=False)
+URL_RE = compile(r"https?://(.+\.)?.+\..+")
 
 
 class TestCategories(unittest.TestCase):
-    """Tests the integrity of the categories database.
+    """Test the integrity of the categories database.
 
     What is tested
     ---------------
@@ -52,25 +55,27 @@ class TestCategories(unittest.TestCase):
     CATS[0][1][0] for the child, while any other category can be ob-
     tained by indexing CATS[parent_number][0] for the parent and
     CATS[parent_number][1][child_number-1] for the child.
+
     """
+
     last_test_altered_cats = False
     cats = backup_CATS.copy()
     # Copying 'CATS' to allow destructive operations. It will be
     # checked for integrity during SetUp()
 
     def setUp(self):
-        if self.last_test_altered_cats == True:
+        if self.last_test_altered_cats:
             self.cats = backup_CATS.copy()
         self.last_test_altered_cats = False
 
     def test_todas_inserted_in_0(self):
-        """cats[0] must be "All Categories" ("Todas")"""
+        """cats[0] must be "All Categories" ("Todas")."""
         self.assertTrue("todas" in self.cats[0][0][1].lower())
         self.assertEqual(self.cats[0][0][0], 0)
         self.__class__.last_test_altered_cats = False
 
     def test_all_unique_and_ordered(self):
-        """Tests for uniqueness and order of categories' X.Y IDs
+        """Test for uniqueness and order of categories' X.Y IDs
 
         All parent categories' numbers must be unique, and inside the
         list of children of a parent category, every element must have
@@ -82,12 +87,14 @@ class TestCategories(unittest.TestCase):
         """
         for former_parent, curr_parent in zip(self.cats, self.cats[1:]):
             self.assertEqual(former_parent[0][0] + 1, curr_parent[0][0])
-            for former_child, curr_child in zip(curr_parent[1], curr_parent[1][1:]):
-                self.assertEqual(former_child['number'] + 1, curr_child['number'])
+            for former_child, curr_child in zip(curr_parent[1],
+                                                curr_parent[1][1:]):
+                self.assertEqual(former_child['number'] + 1,
+                                 curr_child['number'])
         self.__class__.last_test_altered_cats = False
 
     def test_children_start_with_one(self):
-        """Tests if the 1st element of each parent category is number 1
+        """Test if the 1st element of each parent category is number 1.
 
         The number here referred is child['number']. Together with
         all_unique_and_ordered() and todas_inserted_in_0(), this test
@@ -99,7 +106,7 @@ class TestCategories(unittest.TestCase):
             self.assertEqual(curr_parent[1][0]['number'], 1)
 
     def test_consistent_with_types(self):
-        """Tests randomly some categories for type consistency
+        """Test randomly some categories for type consistency.
 
         The meaning of type consistency here is the conformity to speci-
         fication of types. This tests simply randomly select categories
@@ -126,7 +133,7 @@ class TestCategories(unittest.TestCase):
 
 
 class TestGetCat(unittest.TestCase):
-    """Tests the behaviour of the function get_cat
+    """Test the behaviour of the function get_cat
 
     What is tested
     --------------
@@ -151,7 +158,7 @@ class TestGetCat(unittest.TestCase):
                 child["subdomain"], child["suffix"])
 
     def test_expected_outputs(self):
-        """Tests if given category is retrieved consistently"""
+        """Test if given category is retrieved consistently"""
         for _ in range(10):
             cat_code, subdomain, suffix = TestGetCat.random_valid_category()
             ret_subdomain, ret_suffix = ml_brasil.parse.get_cat(cat_code)
@@ -159,7 +166,7 @@ class TestGetCat(unittest.TestCase):
             self.assertEqual(ret_suffix, suffix)
 
     def test_returns_correct_types(self):
-        """Tests if get_cat returns a tuple of strings
+        """Test if get_cat returns a tuple of strings
 
         Randomly chooses categories from CATS database, and checks if
         get_cat returns always two strings.
@@ -190,7 +197,7 @@ class TestGetCat(unittest.TestCase):
                 ml_brasil.parse.get_cat(f"{randint(50,10000)}.{randint(50,10000)}")
 
     def test_doesnt_modify_CATS(self):
-        """Tests that get_cat does not modify the content of CATS"""
+        """Test that get_cat does not modify the content of CATS"""
         for _ in range(10):
             cat_code, _, _ = TestGetCat.random_valid_category()
             ml_brasil.parse.get_cat(cat_code)
@@ -199,7 +206,7 @@ class TestGetCat(unittest.TestCase):
 
 
 class TestGetLink(unittest.TestCase):
-    """Tests the behaviour of the function get_link
+    """Test the behaviour of the function get_link
 
     What is tested
     --------------
@@ -219,15 +226,15 @@ class TestGetLink(unittest.TestCase):
     """
 
     def test_returns_string(self):
-        """Tests that the return type is str"""
+        """Test that the return type is str"""
         self.assertTrue(isinstance(ml_brasil.parse.get_link(PRODUCT_TAG), str))
 
     def test_link_is_from_tag(self):
-        """Tests that the final link is contained in the tag's text"""
+        """Test that the final link is contained in the tag's text"""
         self.assertTrue(ml_brasil.parse.get_link(PRODUCT_TAG) in product)
 
     def test_link_stripped_correctly(self):
-        """Tests if link was stripped of trailing irrelevant information
+        """Test if link was stripped of trailing irrelevant information
 
         With re.search, match in link either MLB123123132 or -_JM, and
         these need to be the end of the link (123123132 stands for any
@@ -238,7 +245,7 @@ class TestGetLink(unittest.TestCase):
         # TODO: needs another example product to test -_JM type links
 
     def test_failure_returns_empty_string(self):
-        """Tests the return in case of failure
+        """Test the return in case of failure
 
         The failure of this function, characterized by the extraction of
         a link that's not correctly ended, must return an empty string,
@@ -254,13 +261,13 @@ class TestGetLink(unittest.TestCase):
         self.assertEqual(ml_brasil.parse.get_link(INCORRECT_TAG), "")
 
     def test_returns_url(self):
-        """Tests if the returned value is an http/https url"""
+        """Test if the returned value is an http/https url"""
         link_url = ml_brasil.parse.get_link(PRODUCT_TAG)
         self.assertTrue(match(URL_RE, link_url) or link_url == "")
 
 
 class TestGetTitle(unittest.TestCase):
-    """Tests the behaviour of the function get_title
+    """Test the behaviour of the function get_title
 
     A title will always be a string, and it needs to be stripped of
     spaces in the beginning or the end. Failure to obtain the title of a
@@ -276,17 +283,17 @@ class TestGetTitle(unittest.TestCase):
     """
 
     def test_string_stripped(self):
-        """Tests if the title is correctly stripped of spaces"""
+        """Test if the title is correctly stripped of spaces"""
         title = ml_brasil.parse.get_title(PRODUCT_TAG)
         self.assertTrue(title.strip() == title)
 
     def test_get_title_from_example(self):
-        """Tests if the title was correctly extracted from the example"""
+        """Test if the title was correctly extracted from the example"""
         title = ml_brasil.parse.get_title(PRODUCT_TAG)
         self.assertEqual(title, "iPhone 11 128 GB Preto 4 GB RAM")
 
     def test_empty_string_on_failure(self):
-        """Tests that get_title returns empty string when it fails
+        """Test that get_title returns empty string when it fails
 
         This test should not test whether if when the argument is of
         incorrect type it returns an empty string, but simply when an
@@ -298,7 +305,7 @@ class TestGetTitle(unittest.TestCase):
 
 
 class TestGetPrice(unittest.TestCase):
-    """Tests the behaviour of the function get_price
+    """Test the behaviour of the function get_price
 
     A price must be stored as a couple (tuple) of ints, except when
     there was a failure to retrieve this information, in which case it
@@ -314,18 +321,18 @@ class TestGetPrice(unittest.TestCase):
     """
 
     def test_type_correct(self):
-        """Tests if returns the correct type for the example product"""
+        """Test if returns the correct type for the example product"""
         price = ml_brasil.parse.get_price(PRODUCT_TAG)
         self.assertTrue(isinstance(price, tuple) and
                         isinstance(price[0], int) and
                         isinstance(price[1], int))
 
     def test_get_price_from_example(self):
-        """Tests if the price was correctly extracted from the example"""
+        """Test if the price was correctly extracted from the example"""
         self.assertEqual(ml_brasil.parse.get_price(PRODUCT_TAG), (4629, 0))
 
     def test_returns_correctly_on_failure(self):
-        """Tests that the return value on failure is (nan,nan)
+        """Test that the return value on failure is (nan,nan)
 
         This test should not test whether if when the argument is of
         incorrect type it returns an empty string, but simply when an
@@ -338,7 +345,7 @@ class TestGetPrice(unittest.TestCase):
 
 
 class TestGetPicture(unittest.TestCase):
-    """Tests the behaviour of the function get_picture
+    """Test the behaviour of the function get_picture
 
     A picture is stored as a url (str). Failure to retrieve a picture of
     a product is not a fatal failure, and an empty string should be re-
@@ -353,17 +360,17 @@ class TestGetPicture(unittest.TestCase):
     """
 
     def test_return_type_is_string(self):
-        """Tests that the return type is a string"""
+        """Test that the return type is a string"""
         self.assertTrue(isinstance(ml_brasil.parse.get_picture(PRODUCT_TAG), str))
         self.assertTrue(isinstance(ml_brasil.parse.get_picture(INCORRECT_TAG), str))
 
     def test_returned_value_is_url(self):
-        """Tests if the returned value is an http/https url"""
+        """Test if the returned value is an http/https url"""
         picture_url = ml_brasil.parse.get_picture(PRODUCT_TAG)
         self.assertTrue(match(URL_RE, picture_url) or picture_url == "")
 
     def test_failure_returns_empty_string(self):
-        """Tests if returns an empty string on failure
+        """Test if returns an empty string on failure
 
         This test should not test whether if when the argument is of
         incorrect type it returns an empty string, but simply when an
@@ -374,14 +381,14 @@ class TestGetPicture(unittest.TestCase):
         self.assertEqual(ml_brasil.parse.get_picture(INCORRECT_TAG), "")
 
     def test_get_picture_from_example(self):
-        """Tests if the picture was correctly extracted from the example"""
+        """Test if the picture was correctly extracted from the example"""
         self.assertEqual(ml_brasil.parse.get_picture(PRODUCT_TAG),
                          "https://http2.mlstatic.com/D_NQ_NP_"
                          "678481-MLA42453875909_072020-V.webp")
 
 
 class TestIsNoInterest(unittest.TestCase):
-    """Tests the behaviour of the function is_no_interest
+    """Test the behaviour of the function is_no_interest
 
     What is tested
     --------------
@@ -391,14 +398,14 @@ class TestIsNoInterest(unittest.TestCase):
     """
 
     def test_return_type_is_bool(self):
-        """Tests that the returned value is a bool"""
+        """Test that the returned value is a bool"""
         self.assertTrue(isinstance(ml_brasil.parse.is_no_interest(PRODUCT_TAG),
                                    bool))
         self.assertTrue(isinstance(ml_brasil.parse.is_no_interest(INCORRECT_TAG),
                                    bool))
 
     def test_failure_returns_false(self):
-        """Tests if returns False on failure
+        """Test if returns False on failure
 
         This test should not test whether if when the argument is of
         incorrect type it returns False, but simply when an incorrect/
@@ -409,12 +416,12 @@ class TestIsNoInterest(unittest.TestCase):
         self.assertEqual(ml_brasil.parse.is_no_interest(INCORRECT_TAG), False)
 
     def test_returns_correctly_for_examples(self):
-        """Tests if the result is consistent with the examples"""
+        """Test if the result is consistent with the examples"""
         self.assertEqual(ml_brasil.parse.is_no_interest(PRODUCT_TAG), True)
 
 
 class TestHasFreeShipping(unittest.TestCase):
-    """Tests the behaviour of the function has_free_shipping
+    """Test the behaviour of the function has_free_shipping
 
     What is tested
     --------------
@@ -424,14 +431,14 @@ class TestHasFreeShipping(unittest.TestCase):
     """
 
     def test_return_type_is_bool(self):
-        """Tests that the returned value is a bool"""
+        """Test that the returned value is a bool"""
         self.assertTrue(isinstance(ml_brasil.parse.has_free_shipping(PRODUCT_TAG),
                                    bool))
         self.assertTrue(isinstance(ml_brasil.parse.has_free_shipping(INCORRECT_TAG),
                                    bool))
 
     def test_failure_returns_false(self):
-        """Tests if returns False on failure
+        """Test if returns False on failure
 
         This test should not test whether if when the argument is of
         incorrect type it returns False, but simply when an incorrect/
@@ -442,12 +449,12 @@ class TestHasFreeShipping(unittest.TestCase):
         self.assertEqual(ml_brasil.parse.has_free_shipping(INCORRECT_TAG), False)
 
     def test_returns_correctly_for_examples(self):
-        """Tests if the result is consistent with the examples"""
+        """Test if the result is consistent with the examples"""
         self.assertEqual(ml_brasil.parse.has_free_shipping(PRODUCT_TAG), False)
 
 
 class TestIsInSale(unittest.TestCase):
-    """Tests the behaviour of the function is_in_sale
+    """Test the behaviour of the function is_in_sale
 
     What is tested
     --------------
@@ -457,11 +464,11 @@ class TestIsInSale(unittest.TestCase):
     """
 
     def test_return_type_is_bool(self):
-        """Tests that the returned value is a bool"""
+        """Test that the returned value is a bool"""
         self.assertTrue(isinstance(ml_brasil.parse.is_in_sale(PRODUCT_TAG), bool))
 
     def test_failure_returns_false(self):
-        """Tests if returns False on failure
+        """Test if returns False on failure
 
         This test should not test whether if when the argument is of
         incorrect type it returns False, but simply when an incorrect/
@@ -472,12 +479,12 @@ class TestIsInSale(unittest.TestCase):
         self.assertEqual(ml_brasil.parse.is_in_sale(INCORRECT_TAG), False)
 
     def test_returns_correctly_for_examples(self):
-        """Tests if the result is consistent with the examples"""
+        """Test if the result is consistent with the examples"""
         self.assertEqual(ml_brasil.parse.is_in_sale(PRODUCT_TAG), True)
 
 
 class TestIsReputable(unittest.TestCase):
-    """Tests the behaviour of the function is_reputable
+    """Test the behaviour of the function is_reputable
 
     What is tested
     --------------
@@ -488,12 +495,12 @@ class TestIsReputable(unittest.TestCase):
     """
 
     def test_return_type_is_bool(self):
-        """Tests that the returned value is a bool"""
+        """Test that the returned value is a bool"""
         link = ml_brasil.parse.get_link(PRODUCT_TAG)
         self.assertTrue(isinstance(ml_brasil.parse.is_reputable(link), bool))
 
     def test_failure_returns_correctly(self):
-        """Tests if returns correct default value on failure
+        """Test if returns correct default value on failure
 
         This test should not test whether if when the argument is of
         incorrect type it returns anything, but simply that when an
@@ -513,7 +520,7 @@ class TestIsReputable(unittest.TestCase):
         self.assertEqual(ml_brasil.parse.is_reputable(link2, min_rep=0), True)
 
     def test_returns_correctly_for_examples(self):
-        """Tests if the result is consistent with the examples"""
+        """Test if the result is consistent with the examples"""
         for rep in range(6):
             link = ml_brasil.parse.get_link(PRODUCT_TAG)
             self.assertEqual(ml_brasil.parse.is_reputable(link, min_rep=rep), True)
@@ -533,7 +540,7 @@ class TestIsReputable(unittest.TestCase):
 
 
 class TestGetSearchPages(unittest.TestCase):
-    """Tests the behaviour of the function get_search_pages
+    """Test the behaviour of the function get_search_pages
 
     What is tested
     --------------
@@ -562,7 +569,7 @@ class TestGetSearchPages(unittest.TestCase):
                                     get_search_pages("daD2sdOM134123daa123jhs"))
 
     def test_return_type_is_list(self):
-        """Tests that the returned value is a list"""
+        """Test that the returned value is a list"""
         self.assertTrue(isinstance(self.query_1, list))
         self.assertTrue(isinstance(self.query_2_zero_results, list))
 
@@ -577,11 +584,11 @@ class TestGetSearchPages(unittest.TestCase):
             in page for page in self.query_1)
 
     def test_lenght_greater_than_0_for_valid_search(self):
-        """Tests if a valid search returns at least one page"""
+        """Test if a valid search returns at least one page"""
         self.assertTrue(self.query_1)
 
     def test_lenght_0_for_invalid_search(self):
-        """Tests if an empty search returns an empty list
+        """Test if an empty search returns an empty list
 
         This test should not test whether if when the arguments are of
         incorrect types it returns [], but simply that when a search
@@ -597,7 +604,7 @@ class TestGetSearchPages(unittest.TestCase):
 
 
 class TestGetAllProducts(unittest.TestCase):
-    """Tests the behaviour of the function get_all_products
+    """Test the behaviour of the function get_all_products
 
     What is tested
     --------------
@@ -631,7 +638,7 @@ class TestGetAllProducts(unittest.TestCase):
             self.assertTrue(isinstance(product, dict))
 
     def test_returns_lenght_0_for_invalid_pages(self):
-        """Tests if an empty search returns an empty list
+        """Test if an empty search returns an empty list
 
         This test should not test whether if when the arguments are of
         incorrect types it returns an empty list, but instead that, if
@@ -647,7 +654,7 @@ class TestGetAllProducts(unittest.TestCase):
 
 
 class TestMLQuery(unittest.TestCase):
-    """Tests the behaviour of the function ML_query
+    """Test the behaviour of the function ML_query
 
     This TestCase takes a long while to run...
 
@@ -707,7 +714,7 @@ class TestMLQuery(unittest.TestCase):
                 self.assertTrue(isinstance(product, dict))
 
     def test_obeys_min_rep(self):
-        """Tests if the reputation for the items are correct"""
+        """Test if the reputation for the items are correct"""
         for product in self.search_racao_sing:
             self.assertEqual(product["reputable"],
                              ml_brasil.parse.
@@ -716,7 +723,7 @@ class TestMLQuery(unittest.TestCase):
                                           aggressiveness=3))
 
     def test_obeys_order(self):
-        """Tests if the search returned is correctly ordered
+        """Test if the search returned is correctly ordered
 
         To make the code in this test simpler, in setUpClass two tuples
         are defined which group together the searches done in setUpClas
@@ -756,12 +763,12 @@ class TestMLQuery(unittest.TestCase):
         self.assertTrue(last['price'] <= (1500, 0))
 
     def test_returns_empty_list_if_too_short_search_term(self):
-        """Tests if a search term too short always returns an empty list"""
+        """Test if a search term too short always returns an empty list"""
         self.assertEqual(ML_scraper.ML_query("    a  "), [])
         self.assertEqual(ML_scraper.ML_query("c"), [])
 
     def test_failure_returns_empty_list(self):
-        """Tests if an empty search returns an empty list
+        """Test if an empty search returns an empty list
 
         This test should not test whether if when the arguments are of
         incorrect types it returns an empty list, but instead that, if
