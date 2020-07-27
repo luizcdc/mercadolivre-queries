@@ -208,17 +208,17 @@ class TestGetCat(unittest.TestCase):
         self.assertEqual(ml_brasil.parse.CATS, backup_CATS)
 
 
-class TestGetLink(unittest.TestCase):
-    """Test the behaviour of the function get_link.
+class TestExtractLink(unittest.TestCase):
+    """Test the behaviour of the Product method _extract_link.
 
     What is tested
     --------------
     - return type is str
-    - get_link strips irrelevant information
-    - get_link doesn't return something that wasn't contained
+    - ._extract_link strips irrelevant information
+    - ._extract_link doesn't return something that wasn't contained
     in the tag
-    - get_link returns an empty string if something went wrong
-    - get_link returns an url
+    - ._extract_link returns an empty string if something went wrong
+    - ._extract_link returns an url
 
     Details
     -------
@@ -231,11 +231,11 @@ class TestGetLink(unittest.TestCase):
 
     def test_returns_string(self):
         """Test that the return type is str."""
-        self.assertTrue(isinstance(PRODUCT_OBJECT.link, str))
+        self.assertTrue(isinstance(PRODUCT_OBJECT._extract_link(), str))
 
     def test_link_is_from_tag(self):
         """Test that the final link is in the tag's text."""
-        self.assertTrue(PRODUCT_OBJECT.link in product)
+        self.assertTrue(PRODUCT_OBJECT._extract_link() in product)
 
     def test_link_stripped_correctly(self):
         """Test if link was stripped of trailing irrelevant information.
@@ -245,33 +245,33 @@ class TestGetLink(unittest.TestCase):
         arbitrary number).
         """
         self.assertTrue(search(r"MLB\d+$|-_JM$|^$",
-                               PRODUCT_OBJECT.link))
+                               PRODUCT_OBJECT._extract_link()))
         # TODO: needs another example product to test -_JM type links
 
     def test_failure_returns_empty_string(self):
         """Test the return in case of failure.
 
-        The failure of this function, characterized by the extraction of
+        The failure of this method, characterized by the extraction of
         a link that's not correctly ended, must return an empty string,
-        which allows for the functions that rely on it to handle it
+        which allows for the methods that rely on it to handle it
         accordingly.
 
         This test should not test whether if when the argument is of
         incorrect type it returns an empty string, but simply when an
-        incorrect/corrupted/different tag from the format this function
+        incorrect/corrupted/different tag from the format this method
         was made too work with is passed as an argument, an empty string
         is returned.
         """
-        self.assertEqual(INCORRECT_OBJECT.link, "")
+        self.assertEqual(INCORRECT_OBJECT._extract_link(), "")
 
     def test_returns_url(self):
         """Test if the returned value is an http/https url."""
-        link_url = PRODUCT_OBJECT.link
+        link_url = PRODUCT_OBJECT._extract_link()
         self.assertTrue(match(URL_RE, link_url) or link_url == "")
 
 
-class TestGetTitle(unittest.TestCase):
-    """Test the behaviour of the function get_title
+class TestExtractTitle(unittest.TestCase):
+    """Test the behaviour of the method _extract_title.
 
     A title will always be a string, and it needs to be stripped of
     spaces in the beginning or the end. Failure to obtain the title of a
@@ -284,28 +284,29 @@ class TestGetTitle(unittest.TestCase):
     - returned string correctly stripped
     - extracts correctly for a provided example
     - returns empty string in failure
+
     """
 
     def test_string_stripped(self):
-        """Test if the title is correctly stripped of spaces"""
-        title = ml_brasil.parse.get_title(PRODUCT_TAG)
+        """Test if the title is correctly stripped of spaces."""
+        title = PRODUCT_OBJECT._extract_title()
         self.assertTrue(title.strip() == title)
 
-    def test_get_title_from_example(self):
-        """Test if the title was correctly extracted from the example"""
-        title = ml_brasil.parse.get_title(PRODUCT_TAG)
+    def test_extract_title_from_example(self):
+        """Test if the title was correctly extracted from the example."""
+        title = PRODUCT_OBJECT._extract_title()
         self.assertEqual(title, "iPhone 11 128 GB Preto 4 GB RAM")
 
     def test_empty_string_on_failure(self):
-        """Test that get_title returns empty string when it fails
+        """Test that _extract_title returns empty string when it fails.
 
         This test should not test whether if when the argument is of
         incorrect type it returns an empty string, but simply when an
-        incorrect/corrupted/different tag from the format this function
+        incorrect/corrupted/different tag from the format this method
         was made too work with is passed as an argument, an empty string
         is returned.
         """
-        self.assertEqual(ml_brasil.parse.get_title(INCORRECT_TAG), "")
+        self.assertEqual(INCORRECT_OBJECT._extract_title(), "")
 
 
 class TestGetPrice(unittest.TestCase):
@@ -553,7 +554,7 @@ class TestGetSearchPages(unittest.TestCase):
     - lenght of valid search is greater than 0
     - lenght of invalid search is 0
     """
-    @classmethod
+    @ classmethod
     def setUpClass(cls):
         """Builds the data which will be used by the TestCase
 
@@ -601,7 +602,7 @@ class TestGetSearchPages(unittest.TestCase):
         """
         self.assertEqual(self.query_2_zero_results, [])
 
-    @classmethod
+    @ classmethod
     def tearDownClass(cls):
         """Resets the external variables used by the TestCase"""
         ml_brasil.parse.SKIP_PAGES = 0
@@ -616,7 +617,7 @@ class TestGetAllProducts(unittest.TestCase):
     - if empty "pages" is passed, returns list of lenght 0
     """
 
-    @classmethod
+    @ classmethod
     def setUpClass(cls):
         """Builds the data which will be used by the TestCase
 
@@ -650,7 +651,7 @@ class TestGetAllProducts(unittest.TestCase):
         """
         self.assertEqual(self.products_from_empty, [])
 
-    @classmethod
+    @ classmethod
     def tearDownClass(cls):
         """Resets the external variables used by the TestCase"""
         ml_brasil.parse.SKIP_PAGES = 0
@@ -672,7 +673,7 @@ class TestMLQuery(unittest.TestCase):
     - failed search returns empty list
     """
 
-    @classmethod
+    @ classmethod
     def setUpClass(cls):
         """Builds the data which will be used by the TestCase
 
