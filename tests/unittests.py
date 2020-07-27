@@ -366,6 +366,7 @@ class TestGetPicture(unittest.TestCase):
     - returned value is a url
     - returns empty string on failure
     - returns correctly for provided example
+
     """
 
     def test_return_type_is_string(self):
@@ -387,6 +388,7 @@ class TestGetPicture(unittest.TestCase):
         tag from the format this method was made too work with is pas-
         sed as an argument to Product's __init__, an empty string is
         returned.
+
         """
         self.assertEqual(INCORRECT_OBJECT._extract_picture(), "")
 
@@ -398,73 +400,77 @@ class TestGetPicture(unittest.TestCase):
 
 
 class TestIsNoInterest(unittest.TestCase):
-    """Test the behaviour of the function is_no_interest
+    """Test the behaviour of the Product method is_no_interest.
 
     What is tested
     --------------
     - return type is bool
     - in failure returns false
     - returns correctly for provided example
+
     """
 
     def test_return_type_is_bool(self):
-        """Test that the returned value is a bool"""
-        self.assertTrue(isinstance(ml_brasil.parse.is_no_interest(PRODUCT_TAG),
+        """Test that the returned value is a bool."""
+        self.assertTrue(isinstance(PRODUCT_OBJECT._is_no_interest(),
                                    bool))
-        self.assertTrue(isinstance(ml_brasil.parse.is_no_interest(INCORRECT_TAG),
+        self.assertTrue(isinstance(INCORRECT_OBJECT._is_no_interest(),
                                    bool))
 
     def test_failure_returns_false(self):
-        """Test if returns False on failure
+        """Test if returns False on failure.
 
-        This test should not test whether if when the argument is of
-        incorrect type it returns False, but simply when an incorrect/
-        corrupted/different tag from the format this function was made
-        to work with is passed as an argument, a False boolean value is
-        returned.
+        This test should not test whether if when the Product was ini-
+        tialized with arguments of the incorrect type it returns False,
+        but simply when an incorrect/corrupted/different tag from the
+        format this method was made too work with is passed as an argu-
+        ment to Product's __init__, False boolean value is returned.
+
         """
-        self.assertEqual(ml_brasil.parse.is_no_interest(INCORRECT_TAG), False)
+        self.assertEqual(INCORRECT_OBJECT._is_no_interest(), False)
 
     def test_returns_correctly_for_examples(self):
-        """Test if the result is consistent with the examples"""
-        self.assertEqual(ml_brasil.parse.is_no_interest(PRODUCT_TAG), True)
+        """Test if the result is consistent with the examples."""
+        self.assertEqual(PRODUCT_OBJECT._is_no_interest(), True)
 
 
 class TestHasFreeShipping(unittest.TestCase):
-    """Test the behaviour of the function has_free_shipping
+    """Test the behaviour of the Product method _has_free_shipping.
 
     What is tested
     --------------
     - return type is bool
     - failure returns false
     - returns correctly for provided example
+
     """
 
     def test_return_type_is_bool(self):
-        """Test that the returned value is a bool"""
-        self.assertTrue(isinstance(ml_brasil.parse.has_free_shipping(PRODUCT_TAG),
+        """Test that the returned value is a bool."""
+        self.assertTrue(isinstance(PRODUCT_OBJECT._has_free_shipping(),
                                    bool))
-        self.assertTrue(isinstance(ml_brasil.parse.has_free_shipping(INCORRECT_TAG),
+        self.assertTrue(isinstance(INCORRECT_OBJECT._has_free_shipping(),
                                    bool))
 
     def test_failure_returns_false(self):
-        """Test if returns False on failure
+        """Test if returns False on failure.
 
-        This test should not test whether if when the argument is of
-        incorrect type it returns False, but simply when an incorrect/
-        corrupted/different tag from the format this function was made
-        to work with is passed as an argument, a False boolean value is
-        returned.
+        This test should not test whether if when the Product was ini-
+        tialized with arguments of the incorrect type it returns False,
+        but simply when an incorrect/corrupted/different tag from the
+        format this method was made too work with is passed as an argu-
+        ment to Product's __init__, False boolean value is returned.
+
         """
-        self.assertEqual(ml_brasil.parse.has_free_shipping(INCORRECT_TAG), False)
+        self.assertEqual(INCORRECT_OBJECT._has_free_shipping(), False)
 
     def test_returns_correctly_for_examples(self):
-        """Test if the result is consistent with the examples"""
-        self.assertEqual(ml_brasil.parse.has_free_shipping(PRODUCT_TAG), False)
+        """Test if the result is consistent with the examples."""
+        self.assertEqual(PRODUCT_OBJECT._has_free_shipping(), False)
 
 
 class TestIsInSale(unittest.TestCase):
-    """Test the behaviour of the function is_in_sale
+    """Test the behaviour of the Product method _is_in_sale.
 
     What is tested
     --------------
@@ -494,7 +500,7 @@ class TestIsInSale(unittest.TestCase):
 
 
 class TestIsReputable(unittest.TestCase):
-    """Test the behaviour of the function is_reputable
+    """Test the behaviour of the Product method _is_reputable
 
     What is tested
     --------------
