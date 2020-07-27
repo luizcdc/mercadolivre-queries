@@ -96,16 +96,15 @@ class Product:
         self._html_tag = product_tag
         if process:
             # TODO: IMPLEMENT SETTING BEHAVIOR IN INIT
-            self.link = get_link(product_tag)
-            self.title = get_title(product_tag)
-            self.price = get_price(product_tag)
-            self.no_interest = is_no_interest(product_tag)
-            self.free_shipping = has_free_shipping(product_tag)
-            self.in_sale = is_in_sale(product_tag)
-            self.picture = get_picture(product_tag)
+            self.link = self._extract_link()
+            self.title = self._extract_title()
+            self.price = self._extract_price()
+            self.no_interest = self._is_no_interest()
+            self.free_shipping = self._has_free_shipping()
+            self.in_sale = self._is_in_sale()
+            self.picture = self._extract_picture()
             if check_rep:
-                self.reputable = is_reputable(get_link(product_tag),
-                                              self.min_rep)
+                self.reputable = self._is_reputable()
 
     @property
     def link(self):
@@ -345,7 +344,7 @@ class Product:
         return picture
 
     def _is_reputable(self):
-        """Verifies wether the seller's reputation is sufficient.
+        """Verify wether the seller's reputation is sufficient.
 
         The way is_reputable checks if a listing is from a reputable seller
         is by requesting the product page from MercadoLivre, and checking
@@ -390,6 +389,31 @@ class Product:
                     return False
 
         return True
+
+    def _format_price(self):
+        price = self.price
+        i = str(price[0])
+        c = ("0" + str(price[1])) if price[1] < 10 else str(price[1])
+        return f"R$ {i},{c}"
+
+    def __repr__(self):
+        """Return string representation of the object.
+
+        Returns a string which contains the attributes of the product in
+        Brazilian Portuguese, in an human-readable format.
+        """
+        price = self._format_price()
+        return (f"Título: {self.title}\n" +
+                f"Preço: {price}" +
+                " " * (23 - len(price)) +  # some math because price varies
+                f"Frete grátis: {'Sim' if self.free_shipping else 'Não'}" +
+                " " * 13 +
+                f"Em promoção: {'Sim' if self.in_sale else 'Não'}\n" +
+                f"Boa reputação: {'Sim' if self.reputable else 'Não'}" +
+                " " * 12 +
+                f"Sem Juros: {'Sim' if self.no_interest else 'Não'}\n" +
+                f"Link: {self.link[8:]}\n" +  # doesn't print https://
+                f"Imagem: {self.picture[8:]}")  # doesn't print https://
 
 
 def get_link(product):
