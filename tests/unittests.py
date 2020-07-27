@@ -272,7 +272,7 @@ class TestExtractLink(unittest.TestCase):
 
 
 class TestExtractTitle(unittest.TestCase):
-    """Test the behaviour of the method _extract_title.
+    """Test the behaviour of the Product method _extract_title.
 
     A title will always be a string, and it needs to be stripped of
     spaces in the beginning or the end. Failure to obtain the title of a
@@ -312,8 +312,8 @@ class TestExtractTitle(unittest.TestCase):
         self.assertEqual(INCORRECT_OBJECT._extract_title(), "")
 
 
-class TestGetPrice(unittest.TestCase):
-    """Test the behaviour of the function get_price
+class TestExtractPrice(unittest.TestCase):
+    """Test the behaviour of the Product method _extract_price.
 
     A price must be stored as a couple (tuple) of ints, except when
     there was a failure to retrieve this information, in which case it
@@ -329,26 +329,27 @@ class TestGetPrice(unittest.TestCase):
     """
 
     def test_type_correct(self):
-        """Test if returns the correct type for the example product"""
-        price = ml_brasil.parse.get_price(PRODUCT_TAG)
+        """Test if returns the correct type for the example product."""
+        price = PRODUCT_OBJECT._extract_price()
         self.assertTrue(isinstance(price, tuple) and
                         isinstance(price[0], int) and
                         isinstance(price[1], int))
 
     def test_get_price_from_example(self):
-        """Test if the price was correctly extracted from the example"""
-        self.assertEqual(ml_brasil.parse.get_price(PRODUCT_TAG), (4629, 0))
+        """Test if the price was correctly extracted from the example."""
+        self.assertEqual(PRODUCT_OBJECT._extract_price(), (4629, 0))
 
     def test_returns_correctly_on_failure(self):
-        """Test that the return value on failure is (nan,nan)
+        """Test that the return value on failure is (nan,nan).
 
-        This test should not test whether if when the argument is of
-        incorrect type it returns an empty string, but simply when an
-        incorrect/corrupted/different tag from the format this function
-        was made too work with is passed as an argument, an empty string
-        is returned.
+        This test should not test whether if when the Product was ini-
+        tialized with arguments of the incorrect type it returns an
+        empty string, but simply when an incorrect/corrupted/different
+        tag from the format this method was made too work with is pas-
+        sed as an argument to Product's __init__, an empty string is
+        returned.
         """
-        price = ml_brasil.parse.get_price(INCORRECT_TAG)
+        price = INCORRECT_OBJECT._extract_price()
         self.assertTrue(isnan(price[0]), isnan(price[1]))
 
 
