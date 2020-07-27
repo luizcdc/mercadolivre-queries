@@ -354,7 +354,7 @@ class TestExtractPrice(unittest.TestCase):
 
 
 class TestGetPicture(unittest.TestCase):
-    """Test the behaviour of the function get_picture
+    """Test the behaviour of the Product method _extract_picture.
 
     A picture is stored as a url (str). Failure to retrieve a picture of
     a product is not a fatal failure, and an empty string should be re-
@@ -369,29 +369,30 @@ class TestGetPicture(unittest.TestCase):
     """
 
     def test_return_type_is_string(self):
-        """Test that the return type is a string"""
-        self.assertTrue(isinstance(ml_brasil.parse.get_picture(PRODUCT_TAG), str))
-        self.assertTrue(isinstance(ml_brasil.parse.get_picture(INCORRECT_TAG), str))
+        """Test that the return type is a string."""
+        self.assertTrue(isinstance(PRODUCT_OBJECT._extract_picture(), str))
+        self.assertTrue(isinstance(INCORRECT_OBJECT._extract_picture(), str))
 
     def test_returned_value_is_url(self):
-        """Test if the returned value is an http/https url"""
-        picture_url = ml_brasil.parse.get_picture(PRODUCT_TAG)
+        """Test if the returned value is an http/https url."""
+        picture_url = PRODUCT_OBJECT._extract_picture()
         self.assertTrue(match(URL_RE, picture_url) or picture_url == "")
 
     def test_failure_returns_empty_string(self):
-        """Test if returns an empty string on failure
+        """Test if returns an empty string on failure.
 
-        This test should not test whether if when the argument is of
-        incorrect type it returns an empty string, but simply when an
-        incorrect/corrupted/different tag from the format this function
-        was made too work with is passed as an argument, an empty string
-        is returned.
+        This test should not test whether if when the Product was ini-
+        tialized with arguments of the incorrect type it returns an
+        empty string, but simply when an incorrect/corrupted/different
+        tag from the format this method was made too work with is pas-
+        sed as an argument to Product's __init__, an empty string is
+        returned.
         """
-        self.assertEqual(ml_brasil.parse.get_picture(INCORRECT_TAG), "")
+        self.assertEqual(INCORRECT_OBJECT._extract_picture(), "")
 
-    def test_get_picture_from_example(self):
-        """Test if the picture was correctly extracted from the example"""
-        self.assertEqual(ml_brasil.parse.get_picture(PRODUCT_TAG),
+    def test_extract_picture_from_example(self):
+        """Test if the picture was correctly extracted from the example."""
+        self.assertEqual(PRODUCT_OBJECT._extract_picture(),
                          "https://http2.mlstatic.com/D_NQ_NP_"
                          "678481-MLA42453875909_072020-V.webp")
 
