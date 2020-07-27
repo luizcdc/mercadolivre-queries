@@ -681,8 +681,8 @@ def get_cat(catid):
     return subdomain, suffix
 
 
-def get_all_products(pages, min_rep):
-    """Parses the pages to generate final results
+def get_all_products(pages, min_rep, process=True):
+    """Process the pages to generate final results.
 
     Goes through the pages in the list returned by get_search_pages ex-
     tracting each product from all the pages, and then extracting pro-
@@ -696,29 +696,22 @@ def get_all_products(pages, min_rep):
     min_rep
         The reputation level threshold that a seller has to reach for
         them to be considered reputable.
+    process
+        Whether all products returned will be processed completely be-
+        fore returning the list of products.
 
     Returns
     -------
-    list[dict]
-        A list of which each element is a dict that represents a product
-        and it's pertaining information.
+    list[Product]
+        A list of which each element is a Product object.
 
     """
+    Product.min_rep = min_rep
     products = [
         BeautifulSoup(page, "html.parser")
         .find_all(class_="results-item highlighted article stack product")
         for page in pages]
-
-    return [{
-            "link": get_link(product),
-            "title": get_title(product),
-            "price": get_price(product),
-            "no-interest": is_no_interest(product),
-            "free-shipping": has_free_shipping(product),
-            "in-sale": is_in_sale(product),
-            "reputable": is_reputable(
-                get_link(product), min_rep),
-            "picture": get_picture(product)}
+    return [Product(product_tag=product, process=process)
             for page in products for product in page]
 
 

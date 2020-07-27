@@ -13,7 +13,7 @@ def ML_query(search_term, order=1,
              min_rep=3, category='0.0',
              price_min=0, price_max=parse.INT32_MAX,
              condition=0, aggressiveness=2, process=True):
-    """Calls for the search and returns ordered results
+    """Call for the search and return ordered results.
 
     This function is the main interface of the package. ML_query is in-
     tended to be the only interface from the package that needs to be
