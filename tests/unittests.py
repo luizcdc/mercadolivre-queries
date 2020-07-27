@@ -209,7 +209,7 @@ class TestGetCat(unittest.TestCase):
 
 
 class TestGetLink(unittest.TestCase):
-    """Test the behaviour of the function get_link
+    """Test the behaviour of the function get_link.
 
     What is tested
     --------------
@@ -226,29 +226,30 @@ class TestGetLink(unittest.TestCase):
     ase of the first version of this program, every valid MercadoLivre
     product page link in its minimal version ends with "MLB1231231232"
     or "-_JM" (1231231232 standing for any arbitrary number).
+
     """
 
     def test_returns_string(self):
-        """Test that the return type is str"""
-        self.assertTrue(isinstance(ml_brasil.parse.get_link(PRODUCT_TAG), str))
+        """Test that the return type is str."""
+        self.assertTrue(isinstance(PRODUCT_OBJECT.link, str))
 
     def test_link_is_from_tag(self):
-        """Test that the final link is contained in the tag's text"""
-        self.assertTrue(ml_brasil.parse.get_link(PRODUCT_TAG) in product)
+        """Test that the final link is in the tag's text."""
+        self.assertTrue(PRODUCT_OBJECT.link in product)
 
     def test_link_stripped_correctly(self):
-        """Test if link was stripped of trailing irrelevant information
+        """Test if link was stripped of trailing irrelevant information.
 
         With re.search, match in link either MLB123123132 or -_JM, and
         these need to be the end of the link (123123132 stands for any
         arbitrary number).
         """
         self.assertTrue(search(r"MLB\d+$|-_JM$|^$",
-                               ml_brasil.parse.get_link(PRODUCT_TAG)))
+                               PRODUCT_OBJECT.link))
         # TODO: needs another example product to test -_JM type links
 
     def test_failure_returns_empty_string(self):
-        """Test the return in case of failure
+        """Test the return in case of failure.
 
         The failure of this function, characterized by the extraction of
         a link that's not correctly ended, must return an empty string,
@@ -261,11 +262,11 @@ class TestGetLink(unittest.TestCase):
         was made too work with is passed as an argument, an empty string
         is returned.
         """
-        self.assertEqual(ml_brasil.parse.get_link(INCORRECT_TAG), "")
+        self.assertEqual(INCORRECT_OBJECT.link, "")
 
     def test_returns_url(self):
-        """Test if the returned value is an http/https url"""
-        link_url = ml_brasil.parse.get_link(PRODUCT_TAG)
+        """Test if the returned value is an http/https url."""
+        link_url = PRODUCT_OBJECT.link
         self.assertTrue(match(URL_RE, link_url) or link_url == "")
 
 
