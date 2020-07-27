@@ -75,7 +75,7 @@ class TestCategories(unittest.TestCase):
         self.__class__.last_test_altered_cats = False
 
     def test_all_unique_and_ordered(self):
-        """Test for uniqueness and order of categories' X.Y IDs
+        """Test for uniqueness and order of categories' X.Y IDs.
 
         All parent categories' numbers must be unique, and inside the
         list of children of a parent category, every element must have
@@ -133,7 +133,7 @@ class TestCategories(unittest.TestCase):
 
 
 class TestGetCat(unittest.TestCase):
-    """Test the behaviour of the function get_cat
+    """Test the behaviour of the function get_cat.
 
     What is tested
     --------------
@@ -148,17 +148,19 @@ class TestGetCat(unittest.TestCase):
     test_expected_outputs and test_raises_ValueError_if_not_existent
     rely on the property of retrieving the category by indexing, which
     is only guaranteed if TestCategories passes completely.
+
     """
+
     @staticmethod
     def random_valid_category():
-        """Helper method that returns data from a random valid category"""
+        """Return data from a random valid category."""
         parent = choice(ml_brasil.parse.CATS)
         child = choice(parent[1])
         return (f"{parent[0][0]}.{child['number']}",
                 child["subdomain"], child["suffix"])
 
     def test_expected_outputs(self):
-        """Test if given category is retrieved consistently"""
+        """Test if given category is retrieved consistently."""
         for _ in range(10):
             cat_code, subdomain, suffix = TestGetCat.random_valid_category()
             ret_subdomain, ret_suffix = ml_brasil.parse.get_cat(cat_code)
@@ -166,7 +168,7 @@ class TestGetCat(unittest.TestCase):
             self.assertEqual(ret_suffix, suffix)
 
     def test_returns_correct_types(self):
-        """Test if get_cat returns a tuple of strings
+        """Test if get_cat returns a tuple of strings.
 
         Randomly chooses categories from CATS database, and checks if
         get_cat returns always two strings.
@@ -178,14 +180,14 @@ class TestGetCat(unittest.TestCase):
             self.assertTrue(isinstance(suffix, str))
 
     def test_subdomain_not_empty(self):
-        """Asserts that the subdomain returned is never empty"""
+        """Asserts that the subdomain returned is never empty."""
         for _ in range(10):
             cat_code, _, _ = TestGetCat.random_valid_category()
             subdomain, _ = ml_brasil.parse.get_cat(cat_code)
             self.assertTrue(subdomain != "")
 
     def test_raises_ValueError_if_not_existent(self):
-        """Asserts that a non-existent input category raises a ValueError
+        """Asserts that non-existent input category raises a ValueError.
 
         This design choice, instead of defaulting for the "Todas" (all)
         category was deemed better because it signals when something is
@@ -194,15 +196,16 @@ class TestGetCat(unittest.TestCase):
         """
         for _ in range(10):
             with self.assertRaises(ValueError):
-                ml_brasil.parse.get_cat(f"{randint(50,10000)}.{randint(50,10000)}")
+                (ml_brasil.parse.
+                 get_cat(f"{randint(50,10000)}.{randint(50,10000)}"))
 
     def test_doesnt_modify_CATS(self):
-        """Test that get_cat does not modify the content of CATS"""
+        """Test that get_cat does not modify the content of CATS."""
         for _ in range(10):
             cat_code, _, _ = TestGetCat.random_valid_category()
             ml_brasil.parse.get_cat(cat_code)
 
-        self.assertTrue(ml_brasil.parse.CATS == backup_CATS)
+        self.assertEqual(ml_brasil.parse.CATS, backup_CATS)
 
 
 class TestGetLink(unittest.TestCase):
