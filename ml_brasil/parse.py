@@ -70,10 +70,13 @@ class Product:
     def __init__(self, product_tag, process=True, check_rep=True):
         """Initialize Product with the html tag.
 
-        self._html_tag is always initialized with the bs4 html tag for
-        the product. The initialization of other attributes can be de-
-        layed until the first time they are acessed. To do this, process
-        and/or check_rep need to be specified False.
+        Before initializing the first Product object, it is recommended
+        to set the class variable 'min_rep' to the desired value for
+        that particular search, to assure consistency between all pro-
+        ducts. self._html_tag is always initialized with the bs4 html
+        tag for the product. The initialization of other attributes can
+        be delayed until the first time they are acessed. To do this,
+        the arguments process and/or check_rep need to be set to False.
 
         Parameters
         ----------
@@ -342,7 +345,7 @@ class Product:
         return picture
 
     def _is_reputable(self):
-        """Verifies wether the seller's reputation is sufficient
+        """Verifies wether the seller's reputation is sufficient.
 
         The way is_reputable checks if a listing is from a reputable seller
         is by requesting the product page from MercadoLivre, and checking
@@ -353,15 +356,6 @@ class Product:
         already filters most unreputable sellers from those listings, and
         therefore these type of listings can always be considered reputable.
 
-        Parameters
-        ----------
-        min_rep
-            The reputation level threshold that a seller has to reach for
-            them to be considered reputable.
-        aggressiveness
-            The level of aggressiveness (speed) that the function will do
-            html requests. The higher its value, the shorter the delay be-
-            tween requests.
 
         Returns
         -------
