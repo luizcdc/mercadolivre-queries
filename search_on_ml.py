@@ -1,27 +1,6 @@
 import ml_brasil
 
 
-def format_price(price):
-    i = str(price[0])
-    c = ("0" + str(price[1])) if price[1] < 10 else str(price[1])
-    return f"R$ {i},{c}"
-
-
-def print_product(product):
-    price = format_price(product['price'])
-    print(f"Título: {product['title']}\n" +
-          f"Preço: {price}" +
-          " " * (23 - len(price)) +  # does some math because price varies
-          f"Frete grátis: {'Sim' if product['free-shipping'] else 'Não'}" +
-          " " * 13 +
-          f"Em promoção: {'Sim' if product['in-sale'] else 'Não'}\n" +
-          f"Boa reputação: {'Sim' if product['reputable'] else 'Não'}" +
-          " " * 12 +
-          f"Sem Juros: {'Sim' if product['no-interest'] else 'Não'}\n" +
-          f"Link: {product['link'][8:]}\n" +  # doesn't print https://
-          f"Imagem: {product['picture'][8:]}")  # doesn't print https://
-
-
 def print_cats():
     for father_cat in ml_brasil.parse.CATS:
         print(f"{father_cat[0][0]} ---> {father_cat[0][1]}:")
@@ -127,11 +106,12 @@ if __name__ == "__main__":
             order = 1
             min_rep = 3
 
-        products = ml_brasil.ML_query(search_term, order, min_rep, *args)
+        products = ml_brasil.ML_query(search_term, order,
+                                      min_rep, *args, process=False)
         print("RESULTADOS:\n")
         for product in products:
-            if product["reputable"]:
-                print_product(product)
+            if product.reputable:
+                print(product)
                 print()
         another = input("Deseja encerrar ou fazer outra pesquisa? "
                         "Se quer fazer outra pesquisa, "
