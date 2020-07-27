@@ -12,12 +12,12 @@ from . import parse
 def ML_query(search_term, order=1,
              min_rep=3, category='0.0',
              price_min=0, price_max=parse.INT32_MAX,
-             condition=0, aggressiveness=2):
+             condition=0, aggressiveness=2, process=True):
     """Calls for the search and returns ordered results
 
     This function is the main interface of the package. ML_query is in-
-    tended to be the only thing from the package that is needed to be
-    imported.
+    tended to be the only interface from the package that needs to be
+    explictly called after the package is imported.
 
     Parameters
     ----------
@@ -44,13 +44,15 @@ def ML_query(search_term, order=1,
         The level of aggressiveness (speed) that the function will do
         html requests. The higher its value, the shorter the delay be-
         tween requests.
+    process
+        Whether all products returned will be processed completely be-
+        fore returning the list of products.
 
     Returns
     -------
-    list[dict]
-        A list of which each element is a dict that represents a product
-        and it's pertaining information, ordered as per the order argu-
-        ment.
+    list[Product]
+        A list of which each element is a Product object, ordered as per
+        the 'order' argument.
 
     """
     products = parse.get_all_products(parse.get_search_pages(search_term,
@@ -59,9 +61,10 @@ def ML_query(search_term, order=1,
                                                              price_max,
                                                              condition,
                                                              aggressiveness),
-                                      min_rep)
+                                      min_rep=min_rep,
+                                      process=process)
     if order:
         products = sorted(products,
-                          key=lambda p: p["price"],
+                          key=lambda p: p.price,
                           reverse=(order == 2))
     return products
