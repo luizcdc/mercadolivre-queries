@@ -501,7 +501,7 @@ class TestIsInSale(unittest.TestCase):
 
 
 class TestIsReputable(unittest.TestCase):
-    """Test the behaviour of the Product method _is_reputable
+    """Test the behaviour of the Product method _is_reputable.
 
     What is tested
     --------------
@@ -509,43 +509,56 @@ class TestIsReputable(unittest.TestCase):
     - failure returns false
     - returns correctly for provided example (may break if provided
     example of listing becomes invalid)
+
     """
+    default_min_rep = ml_brasil.parse.Product.min_rep
+
+    def setUp(self):
+        ml_brasil.parse.Product.min_rep = self.default_min_rep
 
     def test_return_type_is_bool(self):
-        """Test that the returned value is a bool"""
-        link = ml_brasil.parse.get_link(PRODUCT_TAG)
-        self.assertTrue(isinstance(ml_brasil.parse.is_reputable(link), bool))
+        """Test that the returned value is a bool."""
+        self.assertTrue(isinstance(PRODUCT_OBJECT._is_reputable(), bool))
 
     def test_failure_returns_correctly(self):
-        """Test if returns correct default value on failure
+        """Test if returns correct default value on failure.
 
-        This test should not test whether if when the argument is of
-        incorrect type it returns anything, but simply that when an
-        incorrect/corrupted/different tag from the format this function
-        was made to work with is passed as an argument, a boolean value
-        is returned on the terms that follow:
+        This test should not test whether if when the Product was ini-
+        tialized with arguments of the incorrect type it returns any-
+        thing, but simply when an incorrect/corrupted/different tag from
+        the format this method was made too work with is passed as an
+        argument to Product's __init__, a boolean value is returned on
+        the terms that follow:
 
         It should return False for any min_rep above 0. If the min_rep
         passed as a parameter is 0, it should return True.
+
         """
-        link1 = ml_brasil.parse.get_link(INCORRECT_TAG)
-        link2 = "https://www.mercadolivre.com.br/link_invalido_deve_dar_404"
+        PRODUCT_OBJECT._link = ("https://www.mercadolivre.com.br/"
+                                "link_invalido_deve_dar_404")
+        # manually changes the _link value for PRODUCT_OBJECT,
+        # needs to be undone in the end of this method.
+
+        ml_brasil.parse.Product.min_rep = 0
+        self.assertEqual(INCORRECT_OBJECT._is_reputable(), True)
+        self.assertEqual(PRODUCT_OBJECT._is_reputable(), True)
         for rep in range(1, 6):
-            self.assertEqual(ml_brasil.parse.is_reputable(link1, min_rep=rep), False)
-            self.assertEqual(ml_brasil.parse.is_reputable(link2, min_rep=rep), False)
-        self.assertEqual(ml_brasil.parse.is_reputable(link1, min_rep=0), True)
-        self.assertEqual(ml_brasil.parse.is_reputable(link2, min_rep=0), True)
+            ml_brasil.parse.Product.min_rep = rep
+            self.assertEqual(INCORRECT_OBJECT._is_reputable(), False)
+            self.assertEqual(PRODUCT_OBJECT._is_reputable(), False)
+
+        delattr(PRODUCT_OBJECT, "_link")
 
     def test_returns_correctly_for_examples(self):
-        """Test if the result is consistent with the examples"""
+        """Test if the result is consistent with the examples."""
         for rep in range(6):
-            link = ml_brasil.parse.get_link(PRODUCT_TAG)
-            self.assertEqual(ml_brasil.parse.is_reputable(link, min_rep=rep), True)
+            ml_brasil.parse.Product.min_rep = rep
+            self.assertEqual(PRODUCT_OBJECT._is_reputable(), True)
             # every iteration in this loop should return True
             # because the example provided is of a listing which
             # aggregates many sellers of a product onto a single
             # page, which impossibilitates the algorith to extract
-            # the reputation of the seller, but in 99% of the cases
+            # the reputation of the seller, but in most of the cases
             # MercadoLivre already makes sure that in such listings
             # only reputable sellers are displayed. Because of that,
             # we can safely assume that the listing is reputable.
@@ -566,7 +579,7 @@ class TestGetSearchPages(unittest.TestCase):
     - lenght of valid search is greater than 0
     - lenght of invalid search is 0
     """
-    @ classmethod
+    @classmethod
     def setUpClass(cls):
         """Builds the data which will be used by the TestCase
 
@@ -614,7 +627,7 @@ class TestGetSearchPages(unittest.TestCase):
         """
         self.assertEqual(self.query_2_zero_results, [])
 
-    @ classmethod
+    @classmethod
     def tearDownClass(cls):
         """Resets the external variables used by the TestCase"""
         ml_brasil.parse.SKIP_PAGES = 0
@@ -629,7 +642,7 @@ class TestGetAllProducts(unittest.TestCase):
     - if empty "pages" is passed, returns list of lenght 0
     """
 
-    @ classmethod
+    @classmethod
     def setUpClass(cls):
         """Builds the data which will be used by the TestCase
 
@@ -663,7 +676,7 @@ class TestGetAllProducts(unittest.TestCase):
         """
         self.assertEqual(self.products_from_empty, [])
 
-    @ classmethod
+    @classmethod
     def tearDownClass(cls):
         """Resets the external variables used by the TestCase"""
         ml_brasil.parse.SKIP_PAGES = 0
@@ -685,7 +698,7 @@ class TestMLQuery(unittest.TestCase):
     - failed search returns empty list
     """
 
-    @ classmethod
+    @classmethod
     def setUpClass(cls):
         """Builds the data which will be used by the TestCase
 
