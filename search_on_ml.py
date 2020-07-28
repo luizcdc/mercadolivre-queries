@@ -1,4 +1,6 @@
 import ml_brasil
+import csv
+from datetime import datetime
 
 
 def print_cats():
@@ -113,6 +115,25 @@ if __name__ == "__main__":
             if product.reputable:
                 print(product)
                 print()
+
+        save_results = input("Deseja salvar os resultados da pesquisa em um "
+                             "arquivo? Digite \"sim\" para salvar: ")
+        if save_results.lower().strip() in "sim":
+            time_now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+            with open(f"results_{time_now}.csv", 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(('TERMO BUSCADO', 'TÍTULO', 'PREÇO',
+                                 'BOA REPUTAÇÃO', 'SEM JUROS',
+                                 'EM PROMOÇÃO', 'FRETE GRÁTIS',
+                                 'FOTO', 'LINK'))
+                for product in products:
+                    writer.writerow((search_term, product.title, product.price,
+                                     product.reputable, product.no_interest,
+                                     product.in_sale, product.free_shipping,
+                                     product.picture,  product.link))
+            print(f"\nOs resultados foram salvos com sucesso "
+                  f"no arquivo \"results_{time_now}.csv\".\n")
+
         another = input("Deseja encerrar ou fazer outra pesquisa? "
                         "Se quer fazer outra pesquisa, "
                         "digite \"sim\" sem aspas. Se não, digite qualquer "
