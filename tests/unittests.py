@@ -594,8 +594,9 @@ class TestGetSearchPages(unittest.TestCase):
         random, arbitrary string, which should not return any result.
 
         """
-        ml_brasil.parse.SKIP_PAGES = ml_brasil.parse.INT32_MAX
-        # makes the returned query at most 1 page long, at least 0
+        ml_brasil.parse.SKIP_PAGES = 15
+        # makes the returned query have 15 times fewer pages than usual
+        # (at least 1 if the search has any results)
         cls.query_1 = ml_brasil.parse.get_search_pages("4 GB")
         # a very common search term, guaranteed to return lots of results
         cls.query_2_zero_results = (ml_brasil.parse.
@@ -637,17 +638,22 @@ class TestGetSearchPages(unittest.TestCase):
 
 
 class TestGetAllProducts(unittest.TestCase):
-    """Test the behaviour of the function get_all_products
+    """Test the behaviour of the function get_all_products.
 
     What is tested
     --------------
     - return type is list of dict
     - if empty "pages" is passed, returns list of lenght 0
+    - whether process argument is True or False, the lenght of the
+    returned list is the same.
+    - whether process argument is True or False, the returned products
+    are the same and in the same order.
+
     """
 
     @classmethod
     def setUpClass(cls):
-        """Builds the data which will be used by the TestCase
+        """Build the data which will be used by the TestCase.
 
         This setUpClass sets the parse.SKIP_PAGES variable to a value
         that will make the queries made only fetch one page. This is do-
@@ -658,20 +664,36 @@ class TestGetAllProducts(unittest.TestCase):
         list are then passed as arguments to get_all_products (two dis-
         tinct calls), and the returned values are then used by the tests.
         """
-        ml_brasil.parse.SKIP_PAGES = ml_brasil.parse.INT32_MAX
-        # makes the returned query at most 1 page long, at least 0
+        ml_brasil.parse.SKIP_PAGES = 15
+        # makes the returned query have 15 times fewer pages than usual
+        # (at least 1 if the search has any results)
         cls.valid_query = ml_brasil.parse.get_search_pages("4 GB")
-        cls.products = get_all_products(self.valid_query)
-        cls.products_from_empty = get_all_products([])
+        cls.productsT = ml_brasil.parse.get_all_products(cls.valid_query,
+                                                         process=True)
+        cls.productsF = ml_brasil.parse.get_all_products(cls.valid_query,
+                                                         process=False)
+        cls.products_from_empty = ml_brasil.parse.get_all_products([])
 
     def test_return_type_is_list_of_dict(self):
-        """Assures the returned value is a list with only dict elements"""
-        self.assertTrue(isinstance(self.products, list))
-        for product in self.products:
-            self.assertTrue(isinstance(product, dict))
+        """Assure the returned value is a list with only Product elements."""
+        self.assertTrue(isinstance(self.productsT, list))
+        self.assertTrue(isinstance(self.productsF, list))
+        for product in self.productsT:
+            self.assertTrue(isinstance(product, ml_brasil.parse.Product))
+        for product in self.productsF:
+            self.assertTrue(isinstance(product, ml_brasil.parse.Product))
+
+    def test_len_unprocessed_equals_processed(self):
+        """Assure whether processed or not the lenght is equal."""
+        self.assertEqual(len(self.productsT), len(self.productsF))
+
+    def test_products_are_the_same(self):
+        """Assure whether processed or not all products are equal."""
+        for prod1, prod2 in zip(self.productsT, self.productsF):
+            self.assertEqual(prod1._html_tag, prod1._html_tag)
 
     def test_returns_lenght_0_for_invalid_pages(self):
-        """Test if an empty search returns an empty list
+        """Test if an empty search returns an empty list.
 
         This test should not test whether if when the arguments are of
         incorrect types it returns an empty list, but instead that, if
@@ -681,7 +703,7 @@ class TestGetAllProducts(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Resets the external variables used by the TestCase"""
+        """Reset the external variables used by the TestCase."""
         ml_brasil.parse.SKIP_PAGES = 0
         # restores SKIP_PAGES to its original value
 

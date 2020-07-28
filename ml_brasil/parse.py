@@ -453,7 +453,7 @@ def get_cat(catid):
     return subdomain, suffix
 
 
-def get_all_products(pages, min_rep, process=True):
+def get_all_products(pages, min_rep=Product.min_rep, process=True):
     """Process the pages to generate final results.
 
     Goes through the pages in the list returned by get_search_pages ex-
