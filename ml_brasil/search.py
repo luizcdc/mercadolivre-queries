@@ -13,7 +13,7 @@ from . import parse
 def ML_query(search_term, order=1,
              min_rep=3, category='0.0',
              price_min=0, price_max=parse.INT32_MAX,
-             condition=0, aggressiveness=2, process=True):
+             condition=0, aggressiveness=3, process=True):
     """Call for the search and return ordered results.
 
     This function is the main interface of the package. ML_query is in-

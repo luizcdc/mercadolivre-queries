@@ -60,7 +60,7 @@ class Product:
 
     min_rep = 3
     """The minimum reputation for a seller to be reputable."""
-    aggressiveness = 2
+    aggressiveness = 3
     """The speed with which html requests will be performed."""
 
     _THERMOMETER_LEVELS = ("newbie", "red",
@@ -489,7 +489,7 @@ def get_all_products(pages, min_rep=Product.min_rep, process=True):
 
 def get_search_pages(term, cat='0.0',
                      price_min=0, price_max=INT32_MAX,
-                     condition=0, aggressiveness=2):
+                     condition=0, aggressiveness=3):
     """Searches in MercadoLivre with the specified arguments
 
     This function does the requesting to MercadoLivre, returning every
