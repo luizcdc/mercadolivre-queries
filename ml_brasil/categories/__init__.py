@@ -1,4 +1,4 @@
-"""Information about the categories in MercadoLivre Brasil
+"""Information about the categories in MercadoLivre Brasil.
 
 This subpackage only exists to enable the categories.pickle pickled list
 of categories to be loaded by other files in the package.

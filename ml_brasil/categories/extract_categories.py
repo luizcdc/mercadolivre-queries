@@ -1,3 +1,5 @@
+"""Extracts the categories names and codes to categories.pickle."""
+
 from requests import get
 from bs4 import BeautifulSoup
 import re
@@ -8,12 +10,12 @@ match_suffix = re.compile(r".com.br/(.*)$")
 
 
 def get_subdomain(link):
-
+    """Extract category subdomain from its url."""
     return match_subdomain.search(link).group(2)
 
 
 def get_suffix(link):
-
+    """Extract category suffix from its url."""
     return match_suffix.search(link).group(1)
 
 
@@ -30,13 +32,13 @@ for n1, cat_container in enumerate(master_categories, 1):
         [
             [n1, cat_container.find(
                 'a', class_="categories__title").text], [
-                {
-                    "number": n2,
-                    "name": x.text,
-                    "suffix": get_suffix(x["href"]),
-                    "subdomain": get_subdomain(x["href"])} for n2, x in enumerate(cat_container.find(
-                        class_="categories__list").find_all(
-                        class_="categories__subtitle"), 1)]])
+                {"number": n2,
+                 "name": x.text,
+                 "suffix": get_suffix(x["href"]),
+                 "subdomain": get_subdomain(x["href"])}
+                for n2, x in enumerate(cat_container.find(
+                    class_="categories__list").find_all(
+                    class_="categories__subtitle"), 1)]])
 
 with open("categories.pickle", "wb") as savefile:
     pickle.dump(categories, savefile)
