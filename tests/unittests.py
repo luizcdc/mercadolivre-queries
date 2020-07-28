@@ -709,14 +709,13 @@ class TestGetAllProducts(unittest.TestCase):
 
 
 class TestMLQuery(unittest.TestCase):
-    """Test the behaviour of the function ML_query
+    """Test the behaviour of the function ML_query.
 
     This TestCase takes a long while to run...
 
     What is tested
     --------------
     - return type is list
-    - obeys min_rep parameter (consistent with is_reputable)
     - obeys order parameter
     - obeys price_min/price_max parameters
     - raises ValueError if search_term is too short (minimum lenght 2)
@@ -725,7 +724,7 @@ class TestMLQuery(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Builds the data which will be used by the TestCase
+        """Build the data which will be used by the TestCase.
 
         A long, complete search is necessary for more thorough testing,
         but takes a lot of time, and for this reason, aggressiveness is
@@ -734,22 +733,28 @@ class TestMLQuery(unittest.TestCase):
         time.
         """
         cls.REP_FOR_TEST = 4
-        ml_brasil.parse.SKIP_PAGES = ml_brasil.parse.INT32_MAX
+
+        ml_brasil.parse.SKIP_PAGES = 15
+        # makes the returned query have 15 times fewer pages than usual
+        # (at least 1 if the search has any results)
+
         cls.search_4gb_mul = ml_brasil.ML_query("4 GB",
                                                 aggressiveness=3,
-                                                order=1)
-
-        # all searches below are at max 1 page long
+                                                order=1,
+                                                process=False)
         cls.search_4gb_sing = ml_brasil.ML_query("4 GB",
                                                  aggressiveness=3,
                                                  order=1,
                                                  price_min=500,
-                                                 price_max=1500)
+                                                 price_max=1500,
+                                                 process=False)
         cls.search_racao_sing = ml_brasil.ML_query("Ração",
                                                    aggressiveness=3,
                                                    min_rep=cls.REP_FOR_TEST,
-                                                   order=2)
-        cls.search_empty = ml_brasil.ML_query("asdasdsaq12ads23121asdddsa")
+                                                   order=2,
+                                                   process=False)
+        cls.search_empty = ml_brasil.ML_query("asdasdsaq12ads23121asdddsa",
+                                              process=False)
         cls.all_searches = (cls.search_4gb_mul, cls.search_4gb_sing,
                             cls.search_empty, cls.search_racao_sing)
 
@@ -762,68 +767,59 @@ class TestMLQuery(unittest.TestCase):
         ml_brasil.parse.SKIP_PAGES = 0
 
     def test_return_type_is_list(self):
-        """Assures the returned value is a list with only dict elements"""
-        for search in self.all_searches:
-            self.assertTrue(isinstance(search, list))
-            for product in search:
-                self.assertTrue(isinstance(product, dict))
-
-    def test_obeys_min_rep(self):
-        """Test if the reputation for the items are correct"""
-        for product in self.search_racao_sing:
-            self.assertEqual(product["reputable"],
-                             ml_brasil.parse.
-                             is_reputable(product['link'],
-                                          min_rep=self.REP_FOR_TEST,
-                                          aggressiveness=3))
+        """Assure returns list with only Product elements."""
+        for search_ in self.all_searches:
+            self.assertTrue(isinstance(search_, list))
+            for product in search_:
+                self.assertTrue(isinstance(product, ml_brasil.parse.Product))
 
     def test_obeys_order(self):
-        """Test if the search returned is correctly ordered
+        """Test if the search returned is correctly ordered.
 
         To make the code in this test simpler, in setUpClass two tuples
         are defined which group together the searches done in setUpClas
         by which order the products should be sorted by as per the argu-
         ment passed to ML_query.
         """
-        for search in self.order_1:
-            iter1, iter2 = iter(search), iter(search)
+        for search_ in self.order_1:
+            iter1, iter2 = iter(search_), iter(search_)
             next(iter2)
             not_in_order = False
             for i1, i2 in zip(iter1, iter2):
-                if i1['price'] > i2['price']:
+                if i1.price > i2.price:
                     not_in_order = True
                     break
             self.assertFalse(not_in_order)
 
-        for search in self.order_2:
-            iter1, iter2 = iter(search), iter(search)
+        for search_ in self.order_2:
+            iter1, iter2 = iter(search_), iter(search_)
             next(iter2)
             not_in_order = False
             for i1, i2 in zip(iter1, iter2):
-                if i1['price'] < i2['price']:
+                if i1.price < i2.price:
                     not_in_order = True
                     break
             self.assertFalse(not_in_order)
 
     def test_obeys_price_brackets(self):
-        """Test if the price_min price_max arguments are obeyed
+        """Test if the price_min price_max arguments are obeyed.
 
         If it can be assumed that the products are ordered (which is
         tested in test_obeys_order), it's only necessary to check for
         the first and last product listings returned in the search.
         """
         # assuming it's ordered, just check first and last
-        first, last = cls.search_4gb_sing[0], cls.search_4gb_sing[-1]
-        self.assertTrue(first['price'] >= (500, 0))
-        self.assertTrue(last['price'] <= (1500, 0))
+        first, last = self.search_4gb_sing[0], self.search_4gb_sing[-1]
+        self.assertTrue(first.price >= (500, 0))
+        self.assertTrue(last.price <= (1500, 0))
 
     def test_returns_empty_list_if_too_short_search_term(self):
-        """Test if a search term too short always returns an empty list"""
-        self.assertEqual(ML_scraper.ML_query("    a  "), [])
-        self.assertEqual(ML_scraper.ML_query("c"), [])
+        """Assures search term too short always returns empty list."""
+        self.assertEqual(ml_brasil.ML_query("    a  "), [])
+        self.assertEqual(ml_brasil.ML_query("c"), [])
 
     def test_failure_returns_empty_list(self):
-        """Test if an empty search returns an empty list
+        """Test if an empty search returns an empty list.
 
         This test should not test whether if when the arguments are of
         incorrect types it returns an empty list, but instead that, if
@@ -831,6 +827,12 @@ class TestMLQuery(unittest.TestCase):
         an empty list.
         """
         self.assertEqual(self.search_empty, [])
+
+    @classmethod
+    def tearDownClass(cls):
+        """Reset the external variables used by the TestCase."""
+        ml_brasil.parse.SKIP_PAGES = 0
+        # restores SKIP_PAGES to its original value
 
 
 if __name__ == "__main__":
