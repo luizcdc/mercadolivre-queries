@@ -417,7 +417,7 @@ class Product:
 
 
 def get_cat(catid):
-    """Fetches the category information from the database
+    """Fetch the category information from the database.
 
     Using the category id, fetches the information needed to perform
     searches, namely the subdomain and suffix for the search url. If
@@ -490,7 +490,7 @@ def get_all_products(pages, min_rep=Product.min_rep, process=True):
 def get_search_pages(term, cat='0.0',
                      price_min=0, price_max=INT32_MAX,
                      condition=0, aggressiveness=3):
-    """Searches in MercadoLivre with the specified arguments
+    """Search in MercadoLivre with the specified arguments.
 
     This function does the requesting to MercadoLivre, returning every
     result page as raw html strings in a list. Does not return pages

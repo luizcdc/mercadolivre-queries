@@ -1,4 +1,4 @@
-"""Perform extense searches in MercadoLivre Brasil
+"""Perform extense searches in MercadoLivre Brasil.
 
 This package is able to perform searches in MercadoLivre Brasil and re-
 turn lists with items which represent product listings with detailed,
