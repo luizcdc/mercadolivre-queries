@@ -56,6 +56,10 @@ def ML_query(search_term, order=1,
         the 'order' argument.
 
     """
+    search_term = search_term.strip()
+    if len(search_term) < 2:
+        return []
+
     products = parse.get_all_products(parse.get_search_pages(search_term,
                                                              category,
                                                              price_min,
