@@ -570,7 +570,7 @@ class TestIsReputable(unittest.TestCase):
 
 
 class TestGetSearchPages(unittest.TestCase):
-    """Test the behaviour of the function get_search_pages
+    """Test the behaviour of the function get_search_pages.
 
     What is tested
     --------------
@@ -578,10 +578,12 @@ class TestGetSearchPages(unittest.TestCase):
     - in returned pages there are products
     - lenght of valid search is greater than 0
     - lenght of invalid search is 0
+
     """
+
     @classmethod
     def setUpClass(cls):
-        """Builds the data which will be used by the TestCase
+        """Build the data which will be used by the TestCase.
 
         This setUpClass sets the parse.SKIP_PAGES variable to a value
         that will make the queries made only fetch one page. This is do-
@@ -590,21 +592,22 @@ class TestGetSearchPages(unittest.TestCase):
         Two queries which are going to be used by the tests are also
         performed, one with a very common keyword ("4 GB"), one with a
         random, arbitrary string, which should not return any result.
+
         """
         ml_brasil.parse.SKIP_PAGES = ml_brasil.parse.INT32_MAX
         # makes the returned query at most 1 page long, at least 0
         cls.query_1 = ml_brasil.parse.get_search_pages("4 GB")
         # a very common search term, guaranteed to return lots of results
         cls.query_2_zero_results = (ml_brasil.parse.
-                                    get_search_pages("daD2sdOM134123daa123jhs"))
+                                    get_search_pages("daD2sdOM134123daa123jh"))
 
     def test_return_type_is_list(self):
-        """Test that the returned value is a list"""
+        """Test that the returned value is a list."""
         self.assertTrue(isinstance(self.query_1, list))
         self.assertTrue(isinstance(self.query_2_zero_results, list))
 
     def test_has_products_in_page(self):
-        """Assures that there are products in all pages returned
+        """Assures that there are products in all pages returned.
 
         This test will work for a valid or an empty search, but there
         is no need to test this for a empty search.
@@ -614,11 +617,11 @@ class TestGetSearchPages(unittest.TestCase):
             in page for page in self.query_1)
 
     def test_lenght_greater_than_0_for_valid_search(self):
-        """Test if a valid search returns at least one page"""
+        """Test if a valid search returns at least one page."""
         self.assertTrue(self.query_1)
 
     def test_lenght_0_for_invalid_search(self):
-        """Test if an empty search returns an empty list
+        """Test if an empty search returns an empty list.
 
         This test should not test whether if when the arguments are of
         incorrect types it returns [], but simply that when a search
@@ -629,7 +632,7 @@ class TestGetSearchPages(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Resets the external variables used by the TestCase"""
+        """Reset the external variables used by the TestCase."""
         ml_brasil.parse.SKIP_PAGES = 0
 
 
